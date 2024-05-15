@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %} Profile page {% endblock %}
+{% block head %} {{ super() }} {% endblock %}
+
+{% block page_content %}
+  <form action="/protected/profile/{{ profile.user_id }}/update" method="post" enctype="multipart/form-data">
+  <fieldset>
+    <legend>Your profile</legend>
+
+    <div class="border border-secondary rounded">
+      <div class="row text-start">
+
+      <div class="col-4 col-sm-3">
+            <label for="photo">
+              <img id="avatar" src="data:image/png;base64,{{ profile.photo }}" class="img-fluid" alt="User Photo" style="cursor: pointer; border-radius: 5px 0 5px 0;">
+            </label>
+      </div>
+
+      <div class="col-8 col-sm-9">
+          <div class="row mt-5">
+              <div class="col">
+                  <h3>Username: {{ profile.username }}</h3>
+              </div>
+          </div>
+          <div class="row mt-5">
+              <div class="col">
+                  <h3>Email: {{ profile.email }}</h3>
+              </div>
+          </div>
+      </div>
+
+    </div>
+
+    <div class="row mx-1">
+      <div class="col">
+        <label for="first_name" class="form-label">First name:</label>
+        <input
+          class="form-control"
+          type="text"
+          id="first_name"
+          name="first_name"
+          value="{{ profile.first_name if profile.first_name is not none }}"
+          placeholder="Enter your first name"
+        />
+      </div>
+      <div class="col">
+        <label for="last_name" class="form-label">Last name:</label>
+        <input
+          class="form-control"
+          type="text"
+          id="last_name"
+          name="last_name"
+          value="{{ profile.last_name if profile.last_name is not none }}"
+          placeholder="Enter your last name"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3  mx-3">
+      <label for="phone_number" class="form-label">Phone Number:</label>
+      <input
+        class="form-control"
+        type="tel"
+        id="phone_number"
+        name="phone_number"
+        value="{{ profile.phone_number if profile.phone_number is not none }}"
+        placeholder="Enter your phone number"
+      />
+    </div>
+
+    <div class="mb-3  mx-3">
+      <label for="photo" class="form-label">User's avatar:</label>
+      <input class="form-control" type="file" id="photo" name="photo" />
+    </div>
+
+    <div class="mb-3  mx-3">
+      <label for="ass_size" class="form-label">Ass size:</label>
+      <input
+        class="form-control"
+        type="number"
+        id="ass_size"
+        name="ass_size"
+        value="{{ profile.ass_size if profile.ass_size is not none  }}"
+        placeholder="Enter your ass size"
+      />
+    </div>
+
+    <div class="mb-3  mx-3">
+      <input type="submit" class="btn btn-success" value="Save changes" />
+      <a href="/" class="btn btn-secondary" role="button">Cancel</a>
+    </div>
+
+    <div class="border border-danger rounded">
+      <div class="container-fluid" style="margin: 5px">
+            <div class="row">
+              <div class="col text-center">
+                <label for="delete-button" class="form-label">Warning: A deleted account cannot be restored</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col text-center">
+                <a href="/protected/profile/{{ profile.user_id }}/delete" class="btn btn-danger btn-sm" role="button" id="delete-button">Delete Account</a>
+              </div>
+            </div>
+      </div>
+    </div>
+    </div>
+    </fieldset>
+  </form>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script>
+function previewAvatar(event) {
+    // Check if the event target is the avatar image
+    if (event.target.files && event.target.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var output = document.getElementById('avatar');
+            output.src = e.target.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+
+// Add an event listener to the file input to preview the avatar
+document.getElementById('photo').addEventListener('change', previewAvatar);
+
+// Add an event listener to the form to handle the submit event
+document.getElementById('avatarForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting normally
+    // Here you can add your AJAX request or other logic to handle the file upload
+    // For example, you can use the FormData API to send the file to the server
+    var formData = new FormData(event.target);
+    fetch('/protected/profile/{{ profile.user_id }}/update', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        // Update the avatar image after the file is processed on the server
+        var output = document.getElementById('avatar');
+        output.src = URL.createObjectURL(event.target.photo.files[0]);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+  </script>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %} Root {% endblock %}
+{% block head %} {{ super() }} {% endblock %}
+
+{% block top_message %}
+<div class="{{ data.top_message.class }}" role="alert">
+    {{ data.top_message.icon | safe }}
+    {% if data.username %}
+        {{ data.username | safe }}{{ data.top_message.text | safe }}  !!!
+    {% else %}
+        User{{ data.top_message.text | safe }}!!!
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block unsplash_content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="image-container">
+                <img src="{{ unsplash_photo }}" class="img-fluid" alt="Cosmos Image">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer_content %}
+    Photo by <a href="https://unsplash.com/"
+                style="text-decoration: None; color: #ffffff">Unsplash</a>
+{% endblock %}
+
+{% block scripts %} {{ super() }} {% endblock %}
