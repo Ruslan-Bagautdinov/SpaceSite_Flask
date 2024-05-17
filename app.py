@@ -13,6 +13,7 @@ app = Flask(__name__)
 database_file = f"sqlite:///{os.path.join(BASE_DIR, 'spacesite_flask.db')}"
 app.secret_key = SECRET_KEY
 app.config['JWT_SECRET_KEY'] = SECRET_KEY
+app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['SQLALCHEMY_DATABASE_URI'] = database_file
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -34,5 +35,6 @@ with app.app_context():
     except Exception as e:
         print(f"An error occurred while creating the database: {e}")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    with app.app_context():
+        app.run(debug=True)

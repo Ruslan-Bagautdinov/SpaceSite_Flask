@@ -6,9 +6,9 @@
 <div class="{{ data.top_message.class }}" role="alert">
     {{ data.top_message.icon | safe }}
     {% if data.username %}
-        {{ data.username | safe }}{{ data.top_message.text | safe }}  !!!
+        {{ data.top_message.text | safe }} {{ data.username | safe }}
     {% else %}
-        User{{ data.top_message.text | safe }}!!!
+        Welcome to our site!
     {% endif %}
 </div>
 {% endblock %}

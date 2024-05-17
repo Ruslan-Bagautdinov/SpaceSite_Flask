@@ -2,6 +2,15 @@
 {% block title %} Login page {% endblock %}
 {% block head %} {{ super() }} {% endblock %}
 
+{% block top_message %}
+    {% if data.top_message %}
+        <div class="{{ data.top_message.class }}" role="alert">
+            {{ data.top_message.icon | safe }}
+            {{ data.top_message.text | safe }}
+    {% endif %}
+        </div>
+{% endblock %}
+
 {% block page_content %}
   <form action="/auth/login" method="post">
     <fieldset>
