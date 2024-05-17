@@ -11,7 +11,7 @@ import os
 app = Flask(__name__)
 
 database_file = f"sqlite:///{os.path.join(BASE_DIR, 'spacesite_flask.db')}"
-
+app.secret_key = SECRET_KEY
 app.config['JWT_SECRET_KEY'] = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = database_file
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

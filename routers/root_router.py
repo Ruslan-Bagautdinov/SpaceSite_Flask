@@ -2,6 +2,7 @@ from flask import (
     Blueprint,
     request,
     render_template,
+    session,
     jsonify,
     request,
     make_response)
@@ -27,8 +28,10 @@ from templates.icons.icons import HI_ICON
 root_bp = Blueprint('root', __name__)
 
 
-@root_bp.route('/', methods=['GET'])
+@root_bp.route('/', methods=['GET', 'POST'])
 def root(top_message: dict = None):
+
+    top_message = session.get('top_message', None)
 
     if top_message is None:
         top_message = {
@@ -36,9 +39,10 @@ def root(top_message: dict = None):
             "icon": HI_ICON,
             "text": ", welcome to our website!"
         }
+    else:
+        session.pop('top_message', None)
 
     data = {'username': request.cookies.get('username'),
             'top_message': top_message
             }
     return render_template('root.html', data=data)
-

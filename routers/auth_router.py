@@ -1,6 +1,9 @@
 from flask import (
     Blueprint,
     request,
+    redirect,
+    session,
+    url_for,
     render_template,
     jsonify,
     request,
@@ -12,6 +15,7 @@ from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
     set_access_cookies,
+    unset_jwt_cookies,
     set_refresh_cookies,
     create_refresh_token,
     get_jwt
@@ -21,6 +25,9 @@ import datetime
 
 
 from database.models import db, User
+from config import ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES
+from templates.icons.icons import HI_ICON, USER_REGISTER_ICON
+
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -38,7 +45,23 @@ def register():
         user = User(username=username, email=email, password_hash=generate_password_hash(password))
         db.session.add(user)
         db.session.commit()
-        return jsonify({"msg": "User created successfully"}), 201
+
+        access_token = create_access_token(identity=username)
+        refresh_token = create_refresh_token(identity=username)
+
+        resp = make_response(redirect(url_for('root.root')))
+        set_access_cookies(resp, access_token)
+        set_refresh_cookies(resp, refresh_token)
+
+        resp.set_cookie('username', username)
+
+        session['top_message'] = {
+            "class": "alert alert-info rounded",
+            "icon": USER_REGISTER_ICON,
+            "text": f" account created successfully!"
+        }
+        return resp
+
     data = {'username': request.cookies.get('username')}
     return render_template('auth/register.html', data=data)
 
@@ -55,12 +78,30 @@ def login():
         access_token = create_access_token(identity=username)
         refresh_token = create_refresh_token(identity=username)
 
-        resp = make_response(jsonify({'login': True}))
+        resp = make_response(redirect(url_for('root.root')))
         set_access_cookies(resp, access_token)
         set_refresh_cookies(resp, refresh_token)
-        return resp, 200
+
+        resp.set_cookie('username', username)
+
+        session['top_message'] = {
+            "class": "alert alert-info rounded",
+            "icon": USER_REGISTER_ICON,
+            "text": f" access granted!"
+        }
+        return resp
+
     data = {'username': request.cookies.get('username')}
     return render_template('auth/login.html', data=data)
+
+
+@auth_bp.route('/logout', methods=['POST'])
+def logout():
+
+    resp = make_response(redirect(url_for('root.root')))
+    unset_jwt_cookies(resp)
+    resp.set_cookie('username', '', expires=0)
+    return resp
 
 
 @auth_bp.route('/refresh', methods=['POST'])
@@ -80,7 +121,7 @@ def refresh_expiring_jwts(response):
     try:
         exp_timestamp = get_jwt()["exp"]
         now = datetime.datetime.now(datetime.timezone.utc)
-        target_timestamp = datetime.datetime.timestamp(now + datetime.timedelta(minutes=30))
+        target_timestamp = datetime.datetime.timestamp(now + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
         if target_timestamp > exp_timestamp:
             access_token = create_access_token(identity=get_jwt_identity())
             set_access_cookies(response, access_token)
