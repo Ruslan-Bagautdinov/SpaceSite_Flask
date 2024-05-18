@@ -3,10 +3,10 @@
 {% block head %} {{ super() }} {% endblock %}
 
 {% block top_message %}
-    {% if data.top_message %}
-        <div class="{{ data.top_message.class }}" role="alert">
-            {{ data.top_message.icon | safe }}
-            {{ data.top_message.text | safe }}
+    {% if top_message %}
+        <div class="{{ top_message.class }}" role="alert">
+            {{ top_message.icon | safe }}
+            {{ top_message.text | safe }}
     {% endif %}
         </div>
 {% endblock %}

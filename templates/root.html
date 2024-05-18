@@ -3,10 +3,10 @@
 {% block head %} {{ super() }} {% endblock %}
 
 {% block top_message %}
-<div class="{{ data.top_message.class }}" role="alert">
-    {{ data.top_message.icon | safe }}
-    {% if data.username %}
-        {{ data.top_message.text | safe }} {{ data.username | safe }}
+<div class="{{ top_message.class }}" role="alert">
+    {{ top_message.icon | safe }}
+    {% if username %}
+        {{ top_message.text | safe }} {{ username | safe }}
     {% else %}
         Welcome to our site!
     {% endif %}
@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col-12">
             <div class="image-container">
-                <img src="{{ data.unsplash_photo }}" class="img-fluid" alt="Cosmos Image">
+                <img src="{{ unsplash_photo }}" class="img-fluid" alt="Cosmos Image">
             </div>
         </div>
     </div>

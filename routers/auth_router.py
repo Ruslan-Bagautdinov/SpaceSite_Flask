@@ -24,7 +24,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from icecream import ic
 
-from database.models import db, User
+from database.models import db, User, UserProfile
 from config import ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES
 from auth.user_auth import redirect_authenticated_user
 from templates.icons.icons import USER_REGISTER_ICON, WARNING_ICON
@@ -46,8 +46,8 @@ def register():
                 "icon": WARNING_ICON,
                 "text": "Please enter all required fields!"
             }
-            data = {'top_message': top_message}
-            return render_template('auth/register.html', data=data)
+            session['top_message'] = top_message
+            return redirect(url_for('auth.register'))
 
         if User.query.filter_by(username=username).first() is not None:
             top_message = {
@@ -55,11 +55,25 @@ def register():
                 "icon": WARNING_ICON,
                 "text": "User already exists!"
             }
-            data = {'top_message': top_message}
-            return render_template('auth/register.html', data=data)
+            session['top_message'] = top_message
+            return redirect(url_for('auth.register'))
 
-        user = User(username=username, email=email, password_hash=generate_password_hash(password))
-        db.session.add(user)
+        new_user = User(
+            username=username,
+            email=email,
+            password_hash=generate_password_hash(password))
+        db.session.add(new_user)
+        db.session.commit()
+
+        new_user_profile = UserProfile(
+            user_id=new_user.id,
+            first_name=None,
+            last_name=None,
+            phone_number=None,
+            photo=None,
+            ass_size=None
+        )
+        db.session.add(new_user_profile)
         db.session.commit()
 
         top_message = {
@@ -67,13 +81,13 @@ def register():
             "icon": USER_REGISTER_ICON,
             "text": f"Account created:"
         }
-        return redirect_authenticated_user(username, 'root.root', top_message)
+        session['top_message'] = top_message
+        return redirect_authenticated_user(username, 'root.root')
 
     top_message = session.get('top_message', None)
     if top_message:
         session.pop('top_message', None)
-    data = {'top_message': top_message}
-    return render_template('auth/register.html', data=data)
+    return render_template('auth/register.html', top_message=top_message)
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -89,22 +103,21 @@ def login():
                 "icon": WARNING_ICON,
                 "text": "Bad username or password!"
             }
-            data = {'top_message': top_message}
-            return render_template('auth/login.html', data=data)
+            session['top_message'] = top_message
+            return redirect(url_for('auth.login'))
 
         top_message = {
             "class": "alert alert-info rounded",
             "icon": USER_REGISTER_ICON,
             "text": f"Access granted:"
         }
-
-        return redirect_authenticated_user(username, 'root.root', top_message)
+        session['top_message'] = top_message
+        return redirect_authenticated_user(username, 'root.root')
 
     top_message = session.get('top_message', None)
     if top_message:
         session.pop('top_message', None)
-    data = {'top_message': top_message}
-    return render_template('auth/login.html', data=data)
+    return render_template('auth/login.html', top_message=top_message)
 
 
 @auth_bp.route('/logout', methods=['GET'])

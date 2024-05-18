@@ -24,7 +24,7 @@ from flask_jwt_extended import (
     get_jwt
 )
 from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
+from datetime import datetime, timedelta, timezone
 from icecream import ic
 
 
@@ -33,13 +33,13 @@ from config import ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES
 from templates.icons.icons import WARNING_ICON
 
 
-
 def redirect_authenticated_user(username: str,
-                                redirect_uri: str = "root.root",
-                                top_message: dict = None):
+                                redirect_uri: str = "root.root"):
 
-    access_token = create_access_token(identity=username)
-    refresh_token = create_refresh_token(identity=username)
+    access_token = create_access_token(identity=username,
+                                       expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    refresh_token = create_refresh_token(identity=username,
+                                         expires_delta=timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES))
 
     response = make_response(redirect(url_for(redirect_uri)))
 
@@ -47,8 +47,6 @@ def redirect_authenticated_user(username: str,
     set_refresh_cookies(response, refresh_token)
 
     response.set_cookie('username', username)
-
-    session['top_message'] = top_message
 
     return response
 
@@ -69,27 +67,21 @@ def redirect_authenticated_user(username: str,
 def refresh_expiring_jwts(response):
 
     try:
-        # Check if the response is a redirect response
-        # if response.status_code in (301, 302, 303, 305, 307):
-        #     return response
-
-        # Extract the JWT from the response
         jwt_data = get_jwt()
-        # if jwt_data is None:
-        #     # No JWT found, so no need to refresh tokens
-        #     return response
 
+        # Check if the access token is about to expire
         exp_timestamp = jwt_data["exp"]
-        now = datetime.datetime.now(datetime.timezone.utc)
-        target_timestamp = datetime.datetime.timestamp(now + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
         if target_timestamp > exp_timestamp:
             # Access token is about to expire, so refresh it
             access_token = create_access_token(identity=get_jwt_identity())
             set_access_cookies(response, access_token)
 
+        # Check if the refresh token is about to expire
         refresh_exp_timestamp = jwt_data["exp"]
-        refresh_now = datetime.datetime.now(datetime.timezone.utc)
-        refresh_target_timestamp = datetime.datetime.timestamp(refresh_now + datetime.timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES))
+        refresh_now = datetime.now(timezone.utc)
+        refresh_target_timestamp = datetime.timestamp(refresh_now + timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES))
         if refresh_target_timestamp > refresh_exp_timestamp:
             # Refresh token is about to expire, so refresh it
             refresh_token = create_refresh_token(identity=get_jwt_identity())

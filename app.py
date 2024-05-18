@@ -1,12 +1,17 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
+
+from datetime import timedelta
+import os
+
+
+from config import SECRET_KEY, BASE_DIR
+from database.models import db
 from routers.root_router import root_bp
 from routers.auth_router import auth_bp
 from routers.user_router import user_bp
-from config import SECRET_KEY, BASE_DIR
-from database.models import db
-import os
+
 
 app = Flask(__name__)
 

@@ -23,9 +23,9 @@
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        {% if data.username %}
+        {% if username %}
           <i class="bi bi-person-circle"></i>
-          Welcome, {{ data.username }}
+          Welcome, {{ username }}
         {% else %}
           <i class="bi bi-unlock-fill"></i>
           Login or register
@@ -33,7 +33,7 @@
       </button>
 
       <ul class="dropdown-menu dropdown-menu-end">
-        {% if data.username %}
+        {% if username %}
           <li><a class="dropdown-item" href="/user/me">
             <i class="bi bi-person-square"></i>
             Profile

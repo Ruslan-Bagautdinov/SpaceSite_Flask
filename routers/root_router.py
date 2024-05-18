@@ -25,7 +25,6 @@ def root():
     else:
         session.pop('top_message', None)
 
-    data = {'username': username,
-            'top_message': top_message
-            }
-    return render_template('root.html', data=data)
+    return render_template('root.html',
+                           username=username,
+                           top_message=top_message)
