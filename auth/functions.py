@@ -16,9 +16,8 @@ from flask_jwt_extended import (
 from flask import make_response
 
 from datetime import datetime, timedelta, timezone
-from icecream import ic
 
-from templates.icons.icons import WARNING_ICON
+from templates.icons import WARNING_ICON
 
 
 def redirect_authenticated_user(username: str,
@@ -55,3 +54,16 @@ def refresh_expiring_jwts(response):
         return response
     except (RuntimeError, KeyError):
         return redirect_not_authenticated_user()
+
+
+def redirect_with_message(message_class: str,
+                          message_icon: str,
+                          message_text: str,
+                          endpoint: str):
+    top_message = {
+        "class": message_class,
+        "icon": message_icon,
+        "text": message_text,
+    }
+    session['top_message'] = top_message
+    return redirect(url_for(endpoint))

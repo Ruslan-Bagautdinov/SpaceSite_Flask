@@ -1,36 +1,20 @@
 from flask import (
     Blueprint,
-    request,
-    redirect,
     session,
-    url_for,
-    render_template,
-    jsonify,
-    request,
-    make_response)
+    render_template)
 
 
-from flask_jwt_extended import (get_jwt,
-                                jwt_required,
-                                get_jwt_identity,
-                                create_access_token,
-                                set_access_cookies,
-                                verify_jwt_in_request,
-                                decode_token)
-
-from jwt.exceptions import ExpiredSignatureError
+from flask_jwt_extended import (jwt_required,
+                                get_jwt_identity)
 
 from sqlalchemy.orm.exc import NoResultFound
-from icecream import ic
 import os
-from functools import wraps
-from datetime import datetime, timedelta, timezone
 
-
-from auth.user_auth import refresh_expiring_jwts
-from database.models import User, UserProfile
-from tools.tools import read_and_encode_photo
-from templates.icons.icons import WARNING_ICON
+from auth.functions import refresh_expiring_jwts
+# from database.models import User, UserProfile
+from database.crud import get_user, get_user_by_username, get_user_profile
+from tools.functions import read_and_encode_photo
+from templates.icons import WARNING_ICON
 
 
 user_bp = Blueprint('user', __name__)
@@ -45,18 +29,19 @@ from flask import request, redirect, url_for
 def get_me():
     try:
         current_user = get_jwt_identity()
-        user = User.query.filter_by(username=current_user).one()
+        user = get_user_by_username(current_user)
+
+        if user is None:
+            top_message = {
+                "class": "alert alert-danger rounded",
+                "icon": WARNING_ICON,
+                "text": 'User not found!'
+            }
+            session['top_message'] = top_message
+            return redirect(url_for('auth.login'))
+
         user_id = user.id
         return redirect(f'/user/profile/{user_id}')
-
-    except NoResultFound:
-        top_message = {
-            "class": "alert alert-danger rounded",
-            "icon": WARNING_ICON,
-            "text": 'User not found!'
-        }
-        session['top_message'] = top_message
-        return redirect(url_for('auth.login'))
 
     except Exception as e:
         top_message = {
@@ -72,10 +57,16 @@ def get_me():
 @jwt_required(refresh=True)
 def get_profile(user_id):
 
-    try:
-        result_user = User.query.filter_by(id=user_id).one()
-        result_profile = UserProfile.query.filter_by(id=user_id).one()
-    except NoResultFound:
+    result_user = get_user(user_id=user_id)
+
+    profile = {
+        'user_id': result_user.id,
+        'username': result_user.username,
+        'email': result_user.email}
+
+    result_profile = get_user_profile(user_id=user_id)
+
+    if result_user is None or result_profile is None:
         top_message = {
             "class": "alert alert-danger rounded",
             "icon": WARNING_ICON,
@@ -116,7 +107,12 @@ def update_profile(user_id):
     first_name = request.form.get('first_name', None)
     last_name = request.form.get('last_name', None)
     phone_number = request.form.get('phone_number', None)
+    photo = request.form.get('photo', None)
     ass_size = request.form.get('ass_size', None)
+
+
+
+
 
 
 @user_bp.after_request

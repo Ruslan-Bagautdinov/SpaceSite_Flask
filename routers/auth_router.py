@@ -9,13 +9,11 @@ from flask import (
 
 from flask_jwt_extended import unset_jwt_cookies
 
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 
-from icecream import ic
-
-from database.models import db, User, UserProfile
-from auth.user_auth import redirect_authenticated_user
-from templates.icons.icons import USER_REGISTER_ICON, WARNING_ICON
+from database.crud import get_user_by_username, create_new_user
+from auth.functions import redirect_authenticated_user
+from templates.icons import USER_REGISTER_ICON, WARNING_ICON
 
 
 auth_bp = Blueprint('auth', __name__)
@@ -37,7 +35,7 @@ def register():
             session['top_message'] = top_message
             return redirect(url_for('auth.register'))
 
-        if User.query.filter_by(username=username).first() is not None:
+        if get_user_by_username(username=username) is not None:
             top_message = {
                 "class": "alert alert-danger rounded",
                 "icon": WARNING_ICON,
@@ -46,23 +44,7 @@ def register():
             session['top_message'] = top_message
             return redirect(url_for('auth.register'))
 
-        new_user = User(
-            username=username,
-            email=email,
-            password_hash=generate_password_hash(password))
-        db.session.add(new_user)
-        db.session.commit()
-
-        new_user_profile = UserProfile(
-            user_id=new_user.id,
-            first_name=None,
-            last_name=None,
-            phone_number=None,
-            photo=None,
-            ass_size=None
-        )
-        db.session.add(new_user_profile)
-        db.session.commit()
+        create_new_user(username=username, email=email, password=password)
 
         top_message = {
             "class": "alert alert-info rounded",
@@ -83,7 +65,7 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username', None)
         password = request.form.get('password', None)
-        user = User.query.filter_by(username=username).first()
+        user = get_user_by_username(username=username)
 
         if user is None or not check_password_hash(user.password_hash, password):
             top_message = {

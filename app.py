@@ -10,9 +10,9 @@ from config import SECRET_KEY, BASE_DIR
 from database.models import db
 from routers.root_router import root_bp
 from routers.auth_router import auth_bp
-from routers.user_router import user_bp
+from routers.profile_router import user_bp
 
-from auth.user_auth import redirect_not_authenticated_user
+from auth.functions import redirect_not_authenticated_user
 
 
 app = Flask(__name__)

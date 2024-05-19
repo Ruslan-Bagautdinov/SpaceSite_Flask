@@ -4,8 +4,8 @@ from flask import (
     session,
     request)
 
-
-from templates.icons.icons import HI_ICON
+from tools.functions import load_unsplash_photo
+from templates.icons import HI_ICON
 
 root_bp = Blueprint('root', __name__)
 
@@ -25,6 +25,11 @@ def root():
     else:
         session.pop('top_message', None)
 
+    unsplash_photo = load_unsplash_photo('universe galaxy cosmos')
+    if unsplash_photo is None:
+        unsplash_photo = '/static/img/default_unsplash.jpg'
+
     return render_template('root.html',
                            username=username,
-                           top_message=top_message)
+                           top_message=top_message,
+                           unsplash_photo=unsplash_photo)
