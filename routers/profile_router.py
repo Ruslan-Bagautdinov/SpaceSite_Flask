@@ -26,7 +26,7 @@ user_bp = Blueprint('user', __name__)
 
 
 @user_bp.route('/me', methods=['GET'])
-@jwt_required()
+@jwt_required(refresh=True)
 def get_me():
     try:
         current_user = get_jwt_identity()
@@ -42,7 +42,7 @@ def get_me():
         return error_message(str(e))
 
 @user_bp.route('/profile/<int:user_id>', methods=['GET'])
-@jwt_required()
+@jwt_required(refresh=True)
 def get_profile(user_id):
 
     result_user = get_user(user_id=user_id)
@@ -79,6 +79,7 @@ def get_profile(user_id):
 
 
 @user_bp.route('/profile/<int:user_id>/update', methods=['POST'])
+@jwt_required(refresh=True)
 def update_profile(user_id):
 
     first_name = request.form.get('first_name', None)
@@ -91,12 +92,14 @@ def update_profile(user_id):
 
     user_profile = get_user_profile(user_id=user_id)
 
-    ic(user_profile)
+    ic(photo)
 
     if not user_profile:
         return error_message('User not found!')
 
     previous_photo_path = user_profile.photo
+
+    ic(previous_photo_path)
 
     if photo and photo.filename != '':
         if not allowed_file(photo.filename):
@@ -107,6 +110,12 @@ def update_profile(user_id):
         save_upload_file(photo, destination)
         user_profile.photo = destination
 
+        if previous_photo_path and os.path.exists(previous_photo_path):
+            os.remove(previous_photo_path)
+
+    else:
+        user_profile.photo = previous_photo_path
+
     user_profile.first_name = first_name
     user_profile.last_name = last_name
     user_profile.phone_number = phone_number
@@ -114,10 +123,7 @@ def update_profile(user_id):
 
     db.session.commit()
 
-    if previous_photo_path and os.path.exists(previous_photo_path):
-        os.remove(previous_photo_path)
-
-    return ok_message(", your data successfully registered")
+    return ok_message("Saved successfully profile: ")
 
 
 @user_bp.after_request
