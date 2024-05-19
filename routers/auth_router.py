@@ -1,31 +1,19 @@
 from flask import (
     Blueprint,
-    request,
     redirect,
     session,
     url_for,
     render_template,
-    jsonify,
     request,
     make_response)
 
-from flask_jwt_extended import (
-    JWTManager,
-    jwt_required,
-    create_access_token,
-    get_jwt_identity,
-    set_access_cookies,
-    unset_jwt_cookies,
-    set_refresh_cookies,
-    create_refresh_token,
-    get_jwt
-)
+from flask_jwt_extended import unset_jwt_cookies
+
 from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
+
 from icecream import ic
 
 from database.models import db, User, UserProfile
-from config import ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES
 from auth.user_auth import redirect_authenticated_user
 from templates.icons.icons import USER_REGISTER_ICON, WARNING_ICON
 
@@ -122,8 +110,8 @@ def login():
 
 @auth_bp.route('/logout', methods=['GET'])
 def logout():
-
-    resp = make_response(redirect(url_for('root.root')))
+    path = request.args.get('path', 'root.root')
+    resp = make_response(redirect(url_for(path)))
     unset_jwt_cookies(resp)
     resp.set_cookie('username', '', expires=0)
     return resp

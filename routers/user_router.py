@@ -10,13 +10,21 @@ from flask import (
     make_response)
 
 
-from flask_jwt_extended import (jwt_required,
+from flask_jwt_extended import (get_jwt,
+                                jwt_required,
                                 get_jwt_identity,
-                                verify_jwt_in_request)
+                                create_access_token,
+                                set_access_cookies,
+                                verify_jwt_in_request,
+                                decode_token)
+
+from jwt.exceptions import ExpiredSignatureError
 
 from sqlalchemy.orm.exc import NoResultFound
 from icecream import ic
 import os
+from functools import wraps
+from datetime import datetime, timedelta, timezone
 
 
 from auth.user_auth import refresh_expiring_jwts
@@ -28,8 +36,12 @@ from templates.icons.icons import WARNING_ICON
 user_bp = Blueprint('user', __name__)
 
 
+from flask import request, redirect, url_for
+
+
+
 @user_bp.route('/me', methods=['GET'])
-@jwt_required()
+@jwt_required(refresh=True)
 def get_me():
     try:
         current_user = get_jwt_identity()
@@ -57,7 +69,7 @@ def get_me():
 
 
 @user_bp.route('/profile/<int:user_id>', methods=['GET'])
-@jwt_required()
+@jwt_required(refresh=True)
 def get_profile(user_id):
 
     try:
@@ -98,7 +110,7 @@ def get_profile(user_id):
 
 
 @user_bp.route('/profile/<int:user_id>/update', methods=['POST'])
-@jwt_required()
+@jwt_required(refresh=True)
 def update_profile(user_id):
 
     first_name = request.form.get('first_name', None)
@@ -107,8 +119,9 @@ def update_profile(user_id):
     ass_size = request.form.get('ass_size', None)
 
 
-
 @user_bp.after_request
-@jwt_required()
-def refresh_expiring_tokens(response):
+def refresh_access(response):
     return refresh_expiring_jwts(response)
+
+
+
