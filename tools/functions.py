@@ -1,14 +1,29 @@
+from flask import (
+    redirect,
+    session,
+    url_for
+)
+
 import base64
 import requests
 import random
+import os
 
-from config import UNSPLASH_ACCESS_KEY
+from config import UNSPLASH_ACCESS_KEY, ALLOWED_EXTENSIONS
+from templates.icons import WARNING_ICON, OK_ICON
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def save_upload_file(upload_file, destination: str):
-    with open(destination, 'wb') as out_file:
-        while content := upload_file.read(1024):  # Read file in chunks
-            out_file.write(content)
+    # Ensure that the destination directory exists
+    os.makedirs(os.path.dirname(destination), exist_ok=True)
+
+    # Save the file to the destination
+    upload_file.save(destination)
 
 
 def read_and_encode_photo(photo_path):
@@ -54,3 +69,39 @@ def load_unsplash_photo(query: str = "cosmos") -> str | None:
         image_url = None
 
     return image_url
+
+
+def redirect_with_message(message_class: str,
+                          message_icon: str,
+                          message_text: str,
+                          endpoint: str = None,
+                          logout: bool = False):
+    top_message = {
+        "class": message_class,
+        "icon": message_icon,
+        "text": message_text,
+    }
+    session['top_message'] = top_message
+    if not logout:
+        response = redirect(url_for(endpoint))
+    else:
+        response = redirect(url_for('auth.logout', path='auth.login'))
+    return response
+
+
+def error_message(message: str, endpoint: str = 'auth.login'):
+    return redirect_with_message(
+        message_class="alert alert-danger rounded",
+        message_icon=WARNING_ICON,
+        message_text=message,
+        endpoint=endpoint
+    )
+
+
+def ok_message(message: str, endpoint: str = 'root.root'):
+    return redirect_with_message(
+        message_class="alert alert-success rounded",
+        message_icon=OK_ICON,
+        message_text=message,
+        endpoint=endpoint
+    )

@@ -13,3 +13,4 @@ UNSPLASH_ACCESS_KEY = getenv('UNSPLASH_ACCESS_KEY')
 
 BASE_DIR = path.abspath(path.dirname(__file__))
 IMAGE_DIR = path.join(BASE_DIR, 'photo')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}

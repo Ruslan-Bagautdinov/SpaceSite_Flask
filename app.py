@@ -20,13 +20,13 @@ app = Flask(__name__)
 database_file = f"sqlite:///{os.path.join(BASE_DIR, 'spacesite_flask.db')}"
 app.secret_key = SECRET_KEY
 
-
 app.config['JWT_SECRET_KEY'] = SECRET_KEY
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=15)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
-app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+
 jwt = JWTManager(app)
 
 
