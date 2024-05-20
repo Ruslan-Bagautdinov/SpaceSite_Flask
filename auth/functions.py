@@ -10,13 +10,9 @@ from flask_jwt_extended import (
 )
 from flask_jwt_extended import (
     create_access_token,
-    set_access_cookies,
-    get_jwt_identity,
-    get_jwt,
+    set_access_cookies
 )
 
-
-from datetime import datetime, timedelta, timezone
 
 from tools.functions import redirect_with_message
 from templates.icons import WARNING_ICON
@@ -43,15 +39,4 @@ def redirect_authenticated_user(username: str,
     return response
 
 
-def refresh_expiring_jwts(response):
-    try:
-        exp_timestamp = get_jwt()["exp"]
-        now = datetime.now(timezone.utc)
-        target_timestamp = (now + timedelta(minutes=1)).timestamp()
-        if target_timestamp > exp_timestamp:
-            access_token = create_access_token(identity=get_jwt_identity())
-            set_access_cookies(response, access_token)
-        return response
-    except Exception as e:
-        print(str(e))
-        return redirect_not_authenticated_user()
+

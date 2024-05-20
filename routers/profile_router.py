@@ -15,7 +15,7 @@ import os
 from icecream import ic
 
 from config import IMAGE_DIR
-from auth.functions import refresh_expiring_jwts, redirect_with_message
+from auth.functions import redirect_with_message
 from database.models import db, User, UserProfile
 from database.crud import get_user, get_user_by_username, get_user_profile
 from tools.functions import read_and_encode_photo, save_upload_file, allowed_file, error_message, ok_message
@@ -26,7 +26,7 @@ user_bp = Blueprint('user', __name__)
 
 
 @user_bp.route('/me', methods=['GET'])
-@jwt_required(refresh=True)
+@jwt_required()
 def get_me():
     try:
         current_user = get_jwt_identity()
@@ -36,13 +36,14 @@ def get_me():
             return error_message('User not found!')
 
         user_id = user.id
-        return redirect(f'/user/profile/{user_id}')
+        response = redirect(f'/user/profile/{user_id}')
+        return response
 
     except Exception as e:
         return error_message(str(e))
 
 @user_bp.route('/profile/<int:user_id>', methods=['GET'])
-@jwt_required(refresh=True)
+@jwt_required()
 def get_profile(user_id):
 
     result_user = get_user(user_id=user_id)
@@ -79,7 +80,7 @@ def get_profile(user_id):
 
 
 @user_bp.route('/profile/<int:user_id>/update', methods=['POST'])
-@jwt_required(refresh=True)
+@jwt_required()
 def update_profile(user_id):
 
     first_name = request.form.get('first_name', None)
@@ -126,10 +127,10 @@ def update_profile(user_id):
     return ok_message("Saved successfully profile: ")
 
 
-@user_bp.after_request
-@jwt_required(refresh=True)
-def refresh_access(response):
-    return refresh_expiring_jwts(response)
+# @user_bp.after_request
+# @jwt_required(refresh=True)
+# def refresh_access(response):
+#     return refresh_expiring_jwts(response)
 
 
 
