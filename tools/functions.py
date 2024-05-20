@@ -10,7 +10,7 @@ import random
 import os
 
 from config import UNSPLASH_ACCESS_KEY, ALLOWED_EXTENSIONS
-from templates.icons import WARNING_ICON, OK_ICON
+from templates.icons import WARNING_ICON, WARNING_CLASS, OK_ICON, OK_CLASS
 
 
 def allowed_file(filename):
@@ -80,10 +80,10 @@ def redirect_with_message(message_class: str,
         "text": message_text,
     }
     session['top_message'] = top_message
-    if not logout:
-        response = redirect(url_for(endpoint))
-    else:
+    if logout:
         response = redirect(url_for('auth.logout', path='auth.login'))
+    else:
+        response = redirect(url_for(endpoint))
     return response
 
 
@@ -91,7 +91,7 @@ def error_message(message: str,
                   icon: str = WARNING_ICON,
                   endpoint: str = 'auth.login'):
     return redirect_with_message(
-        message_class="alert alert-danger rounded",
+        message_class=WARNING_CLASS,
         message_icon=icon,
         message_text=message,
         endpoint=endpoint
@@ -102,7 +102,7 @@ def ok_message(message: str,
                icon: str = OK_ICON,
                endpoint: str = 'root.root'):
     return redirect_with_message(
-        message_class="alert alert-success rounded",
+        message_class=OK_CLASS,
         message_icon=icon,
         message_text=message,
         endpoint=endpoint

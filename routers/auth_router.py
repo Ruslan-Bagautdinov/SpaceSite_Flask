@@ -27,12 +27,8 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        if not username or not password or not email:
-            return error_message("Please enter all required fields!",
-                                 endpoint='auth.register')
-
         if get_user_by_username(username=username) is not None:
-            return error_message(f"Username {username} is already taken!",
+            return error_message(f"Username {username} is already registered!",
                                  endpoint='auth.register')
 
         create_new_user(username=username, email=email, password=password)
@@ -40,7 +36,7 @@ def register():
         top_message = {
             "class": "alert alert-info rounded",
             "icon": USER_REGISTER_ICON,
-            "text": f"User {username} successfully created!"
+            "text": f"User {username} has been created"
         }
         session['top_message'] = top_message
         return redirect_authenticated_user(username, 'root.root')
@@ -64,7 +60,7 @@ def login():
         top_message = {
             "class": "alert alert-info rounded",
             "icon": USER_REGISTER_ICON,
-            "text": f"{username}: Access granted"
+            "text": f"You are logged in with the account: {username}"
         }
         session['top_message'] = top_message
         return redirect_authenticated_user(username, 'root.root')
