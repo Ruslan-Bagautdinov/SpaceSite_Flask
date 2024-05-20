@@ -19,10 +19,7 @@ def allowed_file(filename):
 
 
 def save_upload_file(upload_file, destination: str):
-    # Ensure that the destination directory exists
     os.makedirs(os.path.dirname(destination), exist_ok=True)
-
-    # Save the file to the destination
     upload_file.save(destination)
 
 
