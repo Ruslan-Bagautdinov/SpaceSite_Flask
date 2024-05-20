@@ -2,8 +2,7 @@ from flask import (Blueprint,
                    session,
                    render_template,
                    request,
-                   redirect,
-                   url_for
+                   redirect
                    )
 from flask_jwt_extended import (jwt_required,
                                 get_jwt_identity
@@ -25,7 +24,7 @@ from tools.functions import (read_and_encode_photo,
                              error_message,
                              ok_message
                              )
-from templates.icons import USER_DELETE_ICON, WARNING_ICON
+from templates.icons import USER_DELETE_ICON
 
 user_bp = Blueprint('user', __name__)
 

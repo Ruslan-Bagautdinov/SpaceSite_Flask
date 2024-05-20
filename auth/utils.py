@@ -1,6 +1,5 @@
 from flask import (
     redirect,
-    session,
     url_for,
     make_response
 )
@@ -37,6 +36,3 @@ def redirect_authenticated_user(username: str,
     set_refresh_cookies(response, refresh_token)
     response.set_cookie('username', username)
     return response
-
-
-
