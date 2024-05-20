@@ -26,7 +26,7 @@ from routers.root_router import root_bp
 from routers.auth_router import auth_bp
 from routers.user_router import user_bp
 
-from auth.functions import redirect_not_authenticated_user
+from auth.utils import redirect_not_authenticated_user
 
 
 app = Flask(__name__)

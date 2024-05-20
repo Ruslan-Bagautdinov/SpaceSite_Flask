@@ -110,7 +110,7 @@ def update_profile(user_id):
     if photo and photo.filename != '':
         if not allowed_file(photo.filename):
             return error_message("File must be an image",
-                                 "root.root")
+                                 endpoint="user.me")
 
         filename = secure_filename(photo.filename)
         destination = os.path.join(IMAGE_DIR, filename)
@@ -130,7 +130,8 @@ def update_profile(user_id):
 
     db.session.commit()
 
-    return ok_message(f"{user.username}, Your profile has been updated!")
+    return ok_message(f"{user.username}, Your profile has been updated!",
+                      endpoint="user.me")
 
 
 @user_bp.route('/profile/<int:user_id>/delete', methods=['GET', 'POST'])
@@ -141,8 +142,8 @@ def confirm_delete(user_id):
 
     if request.method == 'POST':
         if delete_user(user_id):
-            return error_message(icon=USER_DELETE_ICON,
-                                 message=f"{result_user.username} has been deleted!",
+            return error_message(f"{result_user.username} has been deleted!",
+                                 icon=USER_DELETE_ICON,
                                  endpoint="auth.logout")
         else:
             return error_message(message=f"User {result_user.username} not found!")

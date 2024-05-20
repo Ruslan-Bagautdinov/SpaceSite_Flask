@@ -12,7 +12,7 @@ from flask_jwt_extended import unset_jwt_cookies
 from werkzeug.security import check_password_hash
 
 from database.crud import get_user_by_username, create_new_user
-from auth.functions import redirect_authenticated_user
+from auth.utils import redirect_authenticated_user
 from tools.functions import error_message
 from templates.icons import USER_REGISTER_ICON
 
@@ -28,11 +28,11 @@ def register():
         password = request.form.get('password')
 
         if not username or not password or not email:
-            return error_message(message="Please enter all required fields!",
+            return error_message("Please enter all required fields!",
                                  endpoint='auth.register')
 
         if get_user_by_username(username=username) is not None:
-            return error_message(message=f"Username {username} is already taken!",
+            return error_message(f"Username {username} is already taken!",
                                  endpoint='auth.register')
 
         create_new_user(username=username, email=email, password=password)
