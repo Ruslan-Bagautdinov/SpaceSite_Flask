@@ -51,7 +51,6 @@ def load_unsplash_photo(query: str = "cosmos") -> str | None:
         "orientation": "landscape",
         "per_page": 50
     }
-
     try:
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()
@@ -67,7 +66,6 @@ def load_unsplash_photo(query: str = "cosmos") -> str | None:
     except requests.RequestException as err:
         print("An error occurred:", err)
         image_url = None
-
     return image_url
 
 
@@ -89,19 +87,23 @@ def redirect_with_message(message_class: str,
     return response
 
 
-def error_message(message: str, endpoint: str = 'auth.login'):
+def error_message(message: str,
+                  icon: str = WARNING_ICON,
+                  endpoint: str = 'auth.login'):
     return redirect_with_message(
         message_class="alert alert-danger rounded",
-        message_icon=WARNING_ICON,
+        message_icon=icon,
         message_text=message,
         endpoint=endpoint
     )
 
 
-def ok_message(message: str, endpoint: str = 'root.root'):
+def ok_message(message: str,
+               icon: str = OK_ICON,
+               endpoint: str = 'root.root'):
     return redirect_with_message(
         message_class="alert alert-success rounded",
-        message_icon=OK_ICON,
+        message_icon=icon,
         message_text=message,
         endpoint=endpoint
     )

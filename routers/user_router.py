@@ -2,9 +2,7 @@ from flask import (Blueprint,
                    session,
                    render_template,
                    request,
-                   redirect,
-                   url_for,
-                   flash
+                   redirect
                    )
 from flask_jwt_extended import (jwt_required,
                                 get_jwt_identity
@@ -12,15 +10,21 @@ from flask_jwt_extended import (jwt_required,
 
 from werkzeug.utils import secure_filename
 import os
-from icecream import ic
 
 from config import IMAGE_DIR
-from auth.functions import redirect_with_message
-from database.models import db, User, UserProfile
-from database.crud import get_user, get_user_by_username, get_user_profile
-from tools.functions import read_and_encode_photo, save_upload_file, allowed_file, error_message, ok_message
-from templates.icons import WARNING_ICON
-
+from database.models import db
+from database.crud import (get_user,
+                           get_user_by_username,
+                           get_user_profile,
+                           delete_user
+                           )
+from tools.functions import (read_and_encode_photo,
+                             save_upload_file,
+                             allowed_file,
+                             error_message,
+                             ok_message
+                             )
+from templates.icons import USER_DELETE_ICON
 
 user_bp = Blueprint('user', __name__)
 
@@ -41,6 +45,7 @@ def get_me():
 
     except Exception as e:
         return error_message(str(e))
+
 
 @user_bp.route('/profile/<int:user_id>', methods=['GET'])
 @jwt_required()
@@ -76,7 +81,12 @@ def get_profile(user_id):
         default_avatar_base64 = read_and_encode_photo(default_avatar_path)
         profile['photo'] = default_avatar_base64
 
-    return render_template('user/profile.html', username=result_user.username, profile=profile, csrf_token=csrf_token)
+    response = render_template('user/profile.html',
+                               username=result_user.username,
+                               profile=profile,
+                               csrf_token=csrf_token
+                               )
+    return response
 
 
 @user_bp.route('/profile/<int:user_id>/update', methods=['POST'])
@@ -89,22 +99,18 @@ def update_profile(user_id):
     photo = request.files.get('photo', None)
     ass_size = request.form.get('ass_size', None)
 
-    ic(first_name, last_name, phone_number, photo, ass_size)
-
+    user = get_user(user_id=user_id)
     user_profile = get_user_profile(user_id=user_id)
 
-    ic(photo)
-
-    if not user_profile:
+    if not user or not user_profile:
         return error_message('User not found!')
 
     previous_photo_path = user_profile.photo
 
-    ic(previous_photo_path)
-
     if photo and photo.filename != '':
         if not allowed_file(photo.filename):
-            return error_message("File must be an image", "root.root")
+            return error_message("File must be an image",
+                                 "root.root")
 
         filename = secure_filename(photo.filename)
         destination = os.path.join(IMAGE_DIR, filename)
@@ -124,13 +130,26 @@ def update_profile(user_id):
 
     db.session.commit()
 
-    return ok_message("Saved successfully profile: ")
+    return ok_message(f"{user.username}, Your profile has been updated!")
 
 
-# @user_bp.after_request
-# @jwt_required(refresh=True)
-# def refresh_access(response):
-#     return refresh_expiring_jwts(response)
+@user_bp.route('/profile/<int:user_id>/delete', methods=['GET', 'POST'])
+@jwt_required()
+def confirm_delete(user_id):
 
+    result_user = get_user(user_id=user_id)
 
+    if request.method == 'POST':
+        if delete_user(user_id):
+            return error_message(icon=USER_DELETE_ICON,
+                                 message=f"{result_user.username} has been deleted!",
+                                 endpoint="auth.logout")
+        else:
+            return error_message(message=f"User {result_user.username} not found!")
 
+    csrf_token = session.get('csrf_token', None)
+    response = render_template('user/confirm_delete.html',
+                               username=result_user.username,
+                               user_id=user_id,
+                               csrf_token=csrf_token)
+    return response

@@ -15,13 +15,13 @@ def root():
 
     top_message = session.get('top_message', None)
     username = request.cookies.get('username', None)
-    print(username)
 
     if top_message is None:
+        text = f"Hello, {username}!" if username else "Welcome to our site!"
         top_message = {
             "class": "alert alert-light rounded",
             "icon": HI_ICON,
-            "text": f"Hello again, "
+            "text": text
         }
     else:
         session.pop('top_message', None)

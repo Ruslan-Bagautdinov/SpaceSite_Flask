@@ -1,21 +1,30 @@
-from flask import Flask, session, request, redirect, url_for
-from flask_jwt_extended import JWTManager, jwt_required
+from flask import (Flask,
+                   session,
+                   request,
+                   redirect,
+                   url_for
+                   )
+from flask_jwt_extended import (JWTManager,
+                                jwt_required,
+                                get_jwt_identity,
+                                create_access_token,
+                                set_access_cookies
+                                )
 from jwt.exceptions import ExpiredSignatureError
-from flask_jwt_extended import (
-    get_jwt_identity,
-    create_access_token,
-    set_access_cookies
-)
 
 from datetime import timedelta
 import os
 
 
-from config import SECRET_KEY, BASE_DIR
+from config import (SECRET_KEY,
+                    BASE_DIR,
+                    ACCESS_TOKEN_EXPIRE_MINUTES,
+                    REFRESH_TOKEN_EXPIRE_MINUTES
+                    )
 from database.models import db
 from routers.root_router import root_bp
 from routers.auth_router import auth_bp
-from routers.profile_router import user_bp
+from routers.user_router import user_bp
 
 from auth.functions import redirect_not_authenticated_user
 
@@ -26,8 +35,8 @@ database_file = f"sqlite:///{os.path.join(BASE_DIR, 'spacesite_flask.db')}"
 app.secret_key = SECRET_KEY
 
 app.config['JWT_SECRET_KEY'] = SECRET_KEY
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=2)
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
@@ -42,16 +51,6 @@ db.init_app(app)
 app.register_blueprint(root_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(user_bp, url_prefix='/user')
-
-# 1
-
-# @app.errorhandler(ExpiredSignatureError)
-# def handle_expired_token(error):
-#
-#     print('You are not authenticated')
-#     return redirect_not_authenticated_user()
-
-# 2
 
 
 @jwt_required(refresh=True)
@@ -76,24 +75,6 @@ def handle_expired_token(error):
 
     return refresh_expiring_jwts()
 
-
-# @jwt_required(refresh=True)
-# def refresh_expiring_jwts(response):
-#     try:
-#         jwt_required(app.preprocess_request())
-#     except ExpiredSignatureError:
-#         try:
-#
-#
-#
-#
-#         current_user = get_jwt_identity()
-#         access_token = create_access_token(identity=current_user)
-#         set_access_cookies(response, access_token)
-#         return response
-#     except Exception as e:
-#         print(str(e))
-#         return redirect_not_authenticated_user()
 
 with app.app_context():
     try:

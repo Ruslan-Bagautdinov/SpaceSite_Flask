@@ -5,11 +5,7 @@
 {% block top_message %}
 <div class="{{ top_message.class }}" role="alert">
     {{ top_message.icon | safe }}
-    {% if username %}
-        {{ top_message.text | safe }} {{ username | safe }}
-    {% else %}
-        Welcome to our site!
-    {% endif %}
+    {{ top_message.text | safe }}
 </div>
 {% endblock %}
 

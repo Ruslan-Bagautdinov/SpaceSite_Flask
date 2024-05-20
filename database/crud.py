@@ -37,3 +37,13 @@ def create_new_user(username, email, password):
     )
     db.session.add(new_user_profile)
     db.session.commit()
+
+
+def delete_user(user_id: int):
+
+    user = User.query.filter_by(id=user_id).first()
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        return True
+    return False

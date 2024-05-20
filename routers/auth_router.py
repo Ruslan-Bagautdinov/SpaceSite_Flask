@@ -13,7 +13,8 @@ from werkzeug.security import check_password_hash
 
 from database.crud import get_user_by_username, create_new_user
 from auth.functions import redirect_authenticated_user
-from templates.icons import USER_REGISTER_ICON, WARNING_ICON
+from tools.functions import error_message
+from templates.icons import USER_REGISTER_ICON
 
 
 auth_bp = Blueprint('auth', __name__)
@@ -27,29 +28,19 @@ def register():
         password = request.form.get('password')
 
         if not username or not password or not email:
-            top_message = {
-                "class": "alert alert-danger rounded",
-                "icon": WARNING_ICON,
-                "text": "Please enter all required fields!"
-            }
-            session['top_message'] = top_message
-            return redirect(url_for('auth.register'))
+            return error_message(message="Please enter all required fields!",
+                                 endpoint='auth.register')
 
         if get_user_by_username(username=username) is not None:
-            top_message = {
-                "class": "alert alert-danger rounded",
-                "icon": WARNING_ICON,
-                "text": "User already exists!"
-            }
-            session['top_message'] = top_message
-            return redirect(url_for('auth.register'))
+            return error_message(message=f"Username {username} is already taken!",
+                                 endpoint='auth.register')
 
         create_new_user(username=username, email=email, password=password)
 
         top_message = {
             "class": "alert alert-info rounded",
             "icon": USER_REGISTER_ICON,
-            "text": f"Account created:"
+            "text": f"User {username} successfully created!"
         }
         session['top_message'] = top_message
         return redirect_authenticated_user(username, 'root.root')
@@ -68,18 +59,12 @@ def login():
         user = get_user_by_username(username=username)
 
         if user is None or not check_password_hash(user.password_hash, password):
-            top_message = {
-                "class": "alert alert-danger rounded",
-                "icon": WARNING_ICON,
-                "text": "Bad username or password!"
-            }
-            session['top_message'] = top_message
-            return redirect(url_for('auth.login'))
+            return error_message(message="Incorrect username or password!")
 
         top_message = {
             "class": "alert alert-info rounded",
             "icon": USER_REGISTER_ICON,
-            "text": f"Access granted:"
+            "text": f"{username}: Access granted"
         }
         session['top_message'] = top_message
         return redirect_authenticated_user(username, 'root.root')
