@@ -69,8 +69,7 @@ def refresh_expiring_jwts():
 
 @app.errorhandler(ExpiredSignatureError)
 def handle_expired_token(error):
-    print('Errorhandler:')
-    print(str(error))
+    print('app.errorhandler:' + str(error))
     session['next_url'] = request.path
 
     return refresh_expiring_jwts()

@@ -2,7 +2,8 @@ from flask import (Blueprint,
                    session,
                    render_template,
                    request,
-                   redirect
+                   redirect,
+                   url_for
                    )
 from flask_jwt_extended import (jwt_required,
                                 get_jwt_identity
@@ -24,14 +25,14 @@ from tools.functions import (read_and_encode_photo,
                              error_message,
                              ok_message
                              )
-from templates.icons import USER_DELETE_ICON
+from templates.icons import USER_DELETE_ICON, WARNING_ICON
 
 user_bp = Blueprint('user', __name__)
 
 
 @user_bp.route('/me', methods=['GET'])
 @jwt_required()
-def get_me():
+def me():
     try:
         current_user = get_jwt_identity()
         user = get_user_by_username(current_user)
@@ -49,7 +50,11 @@ def get_me():
 
 @user_bp.route('/profile/<int:user_id>', methods=['GET'])
 @jwt_required()
-def get_profile(user_id):
+def profile(user_id):
+
+    top_message = session.get('top_message', None)
+    if top_message:
+        session.pop('top_message', None)
 
     result_user = get_user(user_id=user_id)
     result_profile = get_user_profile(user_id=user_id)
@@ -59,7 +64,7 @@ def get_profile(user_id):
     if not result_user or not result_profile:
         return error_message('User not found!')
 
-    profile = {
+    profile_for_page = {
         "user_id": result_user.id,
         'username': result_user.username,
         'email': result_user.email,
@@ -73,25 +78,26 @@ def get_profile(user_id):
     if result_profile.photo and os.path.exists(result_profile.photo):
         photo_base64 = read_and_encode_photo(result_profile.photo)
         if photo_base64:
-            profile['photo'] = photo_base64
+            profile_for_page['photo'] = photo_base64
         else:
             default_avatar_base64 = read_and_encode_photo(default_avatar_path)
-            profile['photo'] = default_avatar_base64
+            profile_for_page['photo'] = default_avatar_base64
     else:
         default_avatar_base64 = read_and_encode_photo(default_avatar_path)
-        profile['photo'] = default_avatar_base64
+        profile_for_page['photo'] = default_avatar_base64
 
     response = render_template('user/profile.html',
                                username=result_user.username,
-                               profile=profile,
-                               csrf_token=csrf_token
+                               profile=profile_for_page,
+                               csrf_token=csrf_token,
+                               top_message=top_message
                                )
     return response
 
 
 @user_bp.route('/profile/<int:user_id>/update', methods=['POST'])
 @jwt_required()
-def update_profile(user_id):
+def profile_update(user_id):
 
     first_name = request.form.get('first_name', None)
     last_name = request.form.get('last_name', None)
@@ -109,7 +115,7 @@ def update_profile(user_id):
 
     if photo and photo.filename != '':
         if not allowed_file(photo.filename):
-            return error_message("File must be an image",
+            return error_message('File must be an image!',
                                  endpoint="user.me")
 
         filename = secure_filename(photo.filename)
@@ -136,7 +142,7 @@ def update_profile(user_id):
 
 @user_bp.route('/profile/<int:user_id>/delete', methods=['GET', 'POST'])
 @jwt_required()
-def confirm_delete(user_id):
+def profile_delete(user_id):
 
     result_user = get_user(user_id=user_id)
 
