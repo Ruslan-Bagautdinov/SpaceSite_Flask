@@ -33,7 +33,7 @@ def create_new_user(username, email, password):
         last_name=None,
         phone_number=None,
         photo=None,
-        ass_size=None
+        user_age=None
     )
     db.session.add(new_user_profile)
     db.session.commit()

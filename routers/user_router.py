@@ -70,7 +70,7 @@ def profile(user_id):
         "first_name": result_profile.first_name,
         "last_name": result_profile.last_name,
         'phone_number': result_profile.phone_number,
-        'ass_size': result_profile.ass_size
+        'user_age': result_profile.user_age
     }
 
     default_avatar_path = "static/img/default_avatar.jpg"
@@ -102,7 +102,7 @@ def profile_update(user_id):
     last_name = request.form.get('last_name', None)
     phone_number = request.form.get('phone_number', None)
     photo = request.files.get('photo', None)
-    ass_size = request.form.get('ass_size', None)
+    user_age = request.form.get('user_age', None)
 
     user = get_user(user_id=user_id)
     user_profile = get_user_profile(user_id=user_id)
@@ -131,7 +131,7 @@ def profile_update(user_id):
     user_profile.first_name = first_name
     user_profile.last_name = last_name
     user_profile.phone_number = phone_number
-    user_profile.ass_size = ass_size
+    user_profile.user_age = user_age
 
     db.session.commit()
 
