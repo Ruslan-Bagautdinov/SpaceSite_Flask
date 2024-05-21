@@ -3,14 +3,36 @@ from flask import (
     session,
     url_for
 )
+from datetime import datetime
+from time import sleep
 
 import base64
 import requests
 import random
 import os
+import subprocess
 
-from config import UNSPLASH_ACCESS_KEY, ALLOWED_EXTENSIONS
+from config import UNSPLASH_ACCESS_KEY, ALLOWED_EXTENSIONS, BASE_DIR
 from templates.icons import WARNING_ICON, WARNING_CLASS, OK_ICON, OK_CLASS
+
+
+def perform_migrations():
+
+    alembic_path = os.path.join(BASE_DIR, 'alembic')
+    if os.path.exists(alembic_path):
+        print("Alembic directory found")
+    else:
+        subprocess.run(['alembic', 'init', 'alembic'])
+        print('Alembic initialized')
+
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    print('Alembic revision started...')
+    subprocess.run(['alembic', 'revision', '--autogenerate', '-m', now])
+    print('Alembic revision finished')
+    sleep(2)
+    print('Alembic migration started...')
+    subprocess.run(['alembic', 'upgrade', 'head'])
+    print('Alembic migration finished')
 
 
 def allowed_file(filename):

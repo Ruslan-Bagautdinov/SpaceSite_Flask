@@ -4,6 +4,7 @@ from flask import (Flask,
                    redirect,
                    url_for
                    )
+
 from flask_jwt_extended import (JWTManager,
                                 jwt_required,
                                 get_jwt_identity,
@@ -12,8 +13,10 @@ from flask_jwt_extended import (JWTManager,
                                 )
 from jwt.exceptions import ExpiredSignatureError
 
+
 from datetime import timedelta
-import os
+
+from alembic.config import Config
 
 
 from config import (SECRET_KEY,
@@ -27,6 +30,7 @@ from routers.auth_router import auth_bp
 from routers.user_router import user_bp
 
 from auth.utils import redirect_not_authenticated_user
+from tools.functions import perform_migrations
 
 
 app = Flask(__name__)
@@ -46,6 +50,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+alembic_config = Config('alembic.ini')
+alembic_config.set_main_option('sqlalchemy.url', DATABASE_URL)
 
 app.register_blueprint(root_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -75,11 +82,14 @@ def handle_expired_token(error):
 
 
 with app.app_context():
-    try:
-        db.create_all()
-        print("Tables created successfully.")
-    except Exception as e:
-        print(f"An error occurred while creating the database: {e}")
+
+    perform_migrations()
+
+    # try:
+        # db.create_all()
+        # print("Tables created successfully.")
+    # except Exception as e:
+    #     print(f"An error occurred while creating the database: {e}")
 
 if __name__ == "__main__":
     with app.app_context():
