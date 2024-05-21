@@ -31,7 +31,6 @@ from auth.utils import redirect_not_authenticated_user
 
 app = Flask(__name__)
 
-# database_file = f"sqlite:///{os.path.join(BASE_DIR, 'spacesite_flask.db')}"
 app.secret_key = SECRET_KEY
 
 app.config['JWT_SECRET_KEY'] = SECRET_KEY
@@ -43,9 +42,9 @@ app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 
 jwt = JWTManager(app)
 
-
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db.init_app(app)
 
 app.register_blueprint(root_bp)

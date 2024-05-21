@@ -12,7 +12,7 @@ from werkzeug.utils import secure_filename
 import os
 
 from config import IMAGE_DIR
-from database.models import db
+
 from database.crud import (get_user,
                            get_user_by_username,
                            get_user_profile,
