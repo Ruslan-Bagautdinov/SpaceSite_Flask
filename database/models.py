@@ -26,7 +26,7 @@ class UserProfile(db.Model):
     first_name = db.Column(db.String(80))
     last_name = db.Column(db.String(80))
     phone_number = db.Column(db.String(80))
-    photo = db.Column(db.String(256))
+    user_photo = db.Column(db.String(255))
     user_age = db.Column(db.Integer)
 
     def __repr__(self):
