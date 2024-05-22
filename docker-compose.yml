@@ -9,7 +9,7 @@ services:
     volumes:
      - .:/app
      - alembic:/app/alembic
-     - photos:/app/photos
+     - photo:/app/photo
     depends_on:
      - db
     env_file:
@@ -28,4 +28,4 @@ services:
 volumes:
     db_data: {}
     alembic: {}
-    photos: {}
+    photo: {}

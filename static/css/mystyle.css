@@ -1,10 +1,11 @@
 html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 body.light-theme {
+    background-color: #808181;
     color: #222222;
     min-height: 100vh;
     margin: 0;
@@ -34,6 +35,7 @@ body.light-theme .custom-navbar {
 }
 
 body.dark-theme {
+    background-color: #343a41;
     color: #eeeeee;
     min-height: 100vh;
     margin: 0;

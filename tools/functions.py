@@ -5,7 +5,7 @@ from flask import (
 )
 from datetime import datetime
 from time import sleep
-
+from PIL import Image
 import base64
 import requests
 import random
@@ -17,12 +17,10 @@ from templates.icons import WARNING_ICON, WARNING_CLASS, OK_ICON, OK_CLASS
 
 
 def perform_migrations():
-    sleep(10)
     alembic_path = os.path.join(BASE_DIR, 'alembic')
     if os.path.exists(alembic_path):
         print("Alembic directory found")
     else:
-        sleep(10)
         command = ['alembic', 'init', 'alembic']
         subprocess.run(command)
         print('Alembic initialized')
@@ -32,7 +30,7 @@ def perform_migrations():
         print("Versions directory not empty")
     else:
         print("Versions directory empty")
-        sleep(10)
+        sleep(20)
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
         print('Alembic revision started...')
         subprocess.run(['alembic', 'revision', '--autogenerate', '-m', now])
@@ -48,9 +46,26 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+def resize_image(input_image_path, output_image_path, size_limit):
+    with Image.open(input_image_path) as img:
+        # Check if the image is larger than the size limit
+        if max(img.size) > size_limit:
+            # Calculate the aspect ratio
+            aspect_ratio = min(size_limit / img.size[0], size_limit / img.size[1])
+            # Calculate the new size while maintaining the aspect ratio
+            new_size = (int(img.size[0] * aspect_ratio), int(img.size[1] * aspect_ratio))
+            # Resize the image
+            img = img.resize(new_size, Image.Resampling.LANCZOS)
+        # Save the resized image
+        img.save(output_image_path)
+
+
 def save_upload_file(upload_file, destination: str):
     os.makedirs(os.path.dirname(destination), exist_ok=True)
-    upload_file.save(destination)
+
+    resize_image(upload_file, destination, 1024)
+
+    # upload_file.save(destination)
 
 
 def read_and_encode_photo(photo_path):
