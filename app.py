@@ -77,19 +77,13 @@ def refresh_expiring_jwts():
 def handle_expired_token(error):
     print('app.errorhandler:' + str(error))
     session['next_url'] = request.path
-
     return refresh_expiring_jwts()
 
 
 with app.app_context():
-
     perform_migrations()
+    pass
 
-    # try:
-        # db.create_all()
-        # print("Tables created successfully.")
-    # except Exception as e:
-    #     print(f"An error occurred while creating the database: {e}")
 
 if __name__ == "__main__":
     with app.app_context():
