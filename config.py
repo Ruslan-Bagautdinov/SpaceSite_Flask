@@ -13,7 +13,8 @@ MYSQL_HOST = getenv('MYSQL_HOST')
 MYSQL_PORT = getenv('MYSQL_PORT')
 MYSQL_USER = getenv('MYSQL_USER')
 MYSQL_PASSWORD = getenv('MYSQL_PASSWORD')
-MYSQL_DB = getenv('MYSQL_DB')
+MYSQL_ROOT_PASSWORD = getenv('MYSQL_ROOT_PASSWORD')
+MYSQL_DATABASE = getenv('MYSQL_DATABASE')
 
 UNSPLASH_ACCESS_KEY = getenv('UNSPLASH_ACCESS_KEY')
 
@@ -25,4 +26,4 @@ DATABASE_URL = (f"mysql+pymysql"
                 f"://{MYSQL_USER}"
                 f":{MYSQL_PASSWORD}"
                 f"@{MYSQL_HOST}"
-                f"/{MYSQL_DB}")
+                f"/{MYSQL_DATABASE}")
