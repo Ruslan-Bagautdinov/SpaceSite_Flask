@@ -17,11 +17,12 @@ from templates.icons import WARNING_ICON, WARNING_CLASS, OK_ICON, OK_CLASS
 
 
 def perform_migrations():
-
+    sleep(10)
     alembic_path = os.path.join(BASE_DIR, 'alembic')
     if os.path.exists(alembic_path):
         print("Alembic directory found")
     else:
+        sleep(10)
         command = ['alembic', 'init', 'alembic']
         subprocess.run(command)
         print('Alembic initialized')
@@ -31,12 +32,12 @@ def perform_migrations():
         print("Versions directory not empty")
     else:
         print("Versions directory empty")
-
+        sleep(10)
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
         print('Alembic revision started...')
         subprocess.run(['alembic', 'revision', '--autogenerate', '-m', now])
         print('Alembic revision finished')
-        sleep(2)
+        sleep(10)
         print('Alembic migration started...')
         subprocess.run(['alembic', 'upgrade', 'head'])
         print('Alembic migration finished')

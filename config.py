@@ -16,14 +16,16 @@ MYSQL_PASSWORD = getenv('MYSQL_PASSWORD')
 MYSQL_ROOT_PASSWORD = getenv('MYSQL_ROOT_PASSWORD')
 MYSQL_DATABASE = getenv('MYSQL_DATABASE')
 
+DATABASE_URL = (f"mysql+pymysql"
+                f"://{MYSQL_USER}"
+                f":{MYSQL_PASSWORD}"
+                f"@{MYSQL_HOST}"
+                f"/{MYSQL_DATABASE}")
+
 UNSPLASH_ACCESS_KEY = getenv('UNSPLASH_ACCESS_KEY')
 
 BASE_DIR = path.abspath(path.dirname(__file__))
 IMAGE_DIR = path.join(BASE_DIR, 'photo')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-DATABASE_URL = (f"mysql+pymysql"
-                f"://{MYSQL_USER}"
-                f":{MYSQL_PASSWORD}"
-                f"@{MYSQL_HOST}"
-                f"/{MYSQL_DATABASE}")
+

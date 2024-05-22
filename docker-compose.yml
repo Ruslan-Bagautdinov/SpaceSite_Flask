@@ -1,7 +1,9 @@
 version: '3'
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.flask
     ports:
      - "5000:5000"
     volumes:
@@ -10,11 +12,15 @@ services:
      - photos:/app/photos
     depends_on:
      - db
+    env_file:
+      - .env
     environment:
       - MYSQL_HOST=db
       - MYSQL_PORT=3306
   db:
-    image: mysql:5.7
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
     volumes:
      - db_data:/var/lib/mysql
     env_file:
