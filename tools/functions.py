@@ -47,25 +47,20 @@ def allowed_file(filename):
 
 
 def resize_image(input_image_path, output_image_path, size_limit):
+
     with Image.open(input_image_path) as img:
-        # Check if the image is larger than the size limit
         if max(img.size) > size_limit:
-            # Calculate the aspect ratio
             aspect_ratio = min(size_limit / img.size[0], size_limit / img.size[1])
-            # Calculate the new size while maintaining the aspect ratio
             new_size = (int(img.size[0] * aspect_ratio), int(img.size[1] * aspect_ratio))
-            # Resize the image
             img = img.resize(new_size, Image.Resampling.LANCZOS)
-        # Save the resized image
         img.save(output_image_path)
 
 
 def save_upload_file(upload_file, destination: str):
-    os.makedirs(os.path.dirname(destination), exist_ok=True)
 
+    os.makedirs(os.path.dirname(destination), exist_ok=True)
     resize_image(upload_file, destination, 1024)
 
-    # upload_file.save(destination)
 
 
 def read_and_encode_photo(photo_path):
