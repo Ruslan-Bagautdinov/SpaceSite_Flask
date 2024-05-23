@@ -17,6 +17,7 @@ from templates.icons import WARNING_ICON, WARNING_CLASS, OK_ICON, OK_CLASS
 
 
 def perform_migrations():
+
     alembic_path = os.path.join(BASE_DIR, 'alembic')
     if os.path.exists(alembic_path):
         print("Alembic directory found")
@@ -60,7 +61,6 @@ def save_upload_file(upload_file, destination: str):
 
     os.makedirs(os.path.dirname(destination), exist_ok=True)
     resize_image(upload_file, destination, 1024)
-
 
 
 def read_and_encode_photo(photo_path):
