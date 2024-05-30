@@ -6,4 +6,3 @@
 alembic/versions/*
 photo/*
 .env
-spacesite_flask.db
