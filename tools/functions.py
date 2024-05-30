@@ -22,6 +22,7 @@ def perform_migrations():
     if os.path.exists(alembic_path):
         print("Alembic directory found")
     else:
+        sleep(15)
         command = ['alembic', 'init', 'alembic']
         subprocess.run(command)
         print('Alembic initialized')
