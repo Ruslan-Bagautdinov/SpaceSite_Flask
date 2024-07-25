@@ -6,6 +6,7 @@ from flask import (
 from datetime import datetime
 from time import sleep
 from PIL import Image
+import tempfile
 import base64
 import requests
 import random
@@ -49,7 +50,6 @@ def allowed_file(filename):
 
 
 def resize_image(input_image_path, output_image_path, size_limit):
-
     with Image.open(input_image_path) as img:
         if max(img.size) > size_limit:
             aspect_ratio = min(size_limit / img.size[0], size_limit / img.size[1])
@@ -59,9 +59,20 @@ def resize_image(input_image_path, output_image_path, size_limit):
 
 
 def save_upload_file(upload_file, destination: str):
+    if upload_file is None:
+        print("No file provided.")
+        return
 
-    os.makedirs(os.path.dirname(destination), exist_ok=True)
-    resize_image(upload_file, destination, 1024)
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        temp_filename = temp_file.name
+        with open(temp_filename, 'wb') as out_file:
+            while content := upload_file.stream.read(1024):  # Read file in chunks
+                out_file.write(content)
+
+    try:
+        resize_image(temp_filename, destination, 1024)
+    finally:
+        os.remove(temp_filename)
 
 
 def read_and_encode_photo(photo_path):
