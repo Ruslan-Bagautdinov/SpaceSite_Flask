@@ -10,6 +10,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(10), default='user', nullable=False)  # Add this line
 
     # Relationship to UserProfile
     profile = db.relationship('UserProfile', backref='user', uselist=False, cascade="all, delete-orphan")

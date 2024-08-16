@@ -1,3 +1,5 @@
+import os
+
 from flask import (Blueprint,
                    session,
                    render_template,
@@ -7,28 +9,25 @@ from flask import (Blueprint,
 from flask_jwt_extended import (jwt_required,
                                 get_jwt_identity
                                 )
-
+from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
-import os
 
 from config import IMAGE_DIR
-
 from database.crud import (get_user,
                            get_user_by_username,
                            get_user_profile,
                            update_user_profile,
                            delete_user
                            )
+from templates.icons import USER_DELETE_ICON
 from tools.functions import (read_and_encode_photo,
                              save_upload_file,
                              allowed_file,
                              error_message,
                              ok_message
                              )
-from templates.icons import USER_DELETE_ICON
 
 user_bp = Blueprint('user', __name__)
-
 
 @user_bp.route('/me', methods=['GET'])
 @jwt_required()
@@ -47,11 +46,9 @@ def me():
     except Exception as e:
         return error_message(str(e))
 
-
 @user_bp.route('/profile/<int:user_id>', methods=['GET'])
 @jwt_required()
 def profile(user_id):
-
     top_message = session.get('top_message', None)
     if top_message:
         session.pop('top_message', None)
@@ -71,7 +68,8 @@ def profile(user_id):
         "first_name": result_profile.first_name,
         "last_name": result_profile.last_name,
         'phone_number': result_profile.phone_number,
-        'user_age': result_profile.user_age
+        'user_age': result_profile.user_age,
+        'role': result_user.role
     }
 
     default_avatar_path = "static/img/default_avatar.jpg"
@@ -94,11 +92,9 @@ def profile(user_id):
                                )
     return response
 
-
 @user_bp.route('/profile/<int:user_id>/update', methods=['POST'])
 @jwt_required()
 def profile_update(user_id):
-
     first_name = request.form.get('first_name', None)
     last_name = request.form.get('last_name', None)
     phone_number = request.form.get('phone_number', None)
@@ -143,16 +139,17 @@ def profile_update(user_id):
     else:
         return error_message('User not found!')
 
-
 @user_bp.route('/profile/<int:user_id>/delete', methods=['GET', 'POST'])
 @jwt_required()
 def profile_delete(user_id):
-
     result_user = get_user(user_id=user_id)
     user_profile = get_user_profile(user_id)
     previous_photo_path = user_profile.user_photo
 
     if request.method == 'POST':
+        password = request.form.get('password', None)
+        if not check_password_hash(result_user.password_hash, password):
+            return error_message('Incorrect password!')
 
         if delete_user(user_id):
             if previous_photo_path and os.path.exists(previous_photo_path):

@@ -4,11 +4,10 @@
 
 {% block page_content %}
     <div class="container-fluid" style="margin: 5px">
-        <form id="delete-form" action="/user/profile/{{ user_id }}/delete" method="post">
+        <form id="delete-form" action="/admin/user/{{ user_id }}/delete" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <div class="container d-flex align-items-center justify-content-center" style="margin: 5px">
-                <label for="password">{{ username }}, enter your password to delete your account</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <label for="confirm">{{ username }}, are you sure you want to delete this account?</label>
             </div>
             <div class="border border-danger rounded" >
                 <div class="container-fluid" style="margin: 5px">
@@ -20,8 +19,8 @@
                         </div>
                         <div class="row">
                           <div class="col text-center">
-                            <button type="submit" class="btn btn-danger btn-sm" id="delete-button">Delete Account</button>
-                            <a href="/user/me" class="btn btn-secondary btn-sm" role="button">Cancel</a>
+                            <button type="submit" class="btn btn-danger btn-sm" id="delete-button">Yes</button>
+                            <a href="/admin/users" class="btn btn-secondary btn-sm" role="button">No</a>
                           </div>
                         </div>
                     </div>

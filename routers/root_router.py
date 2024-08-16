@@ -1,23 +1,21 @@
-from flask import (
-    Blueprint,
-    render_template,
-    session,
-    request)
+from flask import Blueprint, render_template, session, request
 
-from tools.functions import load_unsplash_photo
 from templates.icons import HI_ICON
+from tools.functions import load_unsplash_photo
 
 root_bp = Blueprint('root', __name__)
 
 
 @root_bp.route('/', methods=['GET', 'POST'])
 def root():
-
     top_message = session.get('top_message', None)
-    username = request.cookies.get('username', None)
 
     if top_message is None:
-        text = f"Hello, {username}!" if username else "Welcome to our site!"
+        if request.environ.get('current_user'):
+            current_user = request.environ['current_user']
+            text = f"Hello, {current_user.role} {current_user.username}!"
+        else:
+            text = "Welcome to our site!"
         top_message = {
             "class": "alert alert-light rounded",
             "icon": HI_ICON,
@@ -31,6 +29,5 @@ def root():
         unsplash_photo = '/static/img/default_unsplash.jpg'
 
     return render_template('root.html',
-                           username=username,
                            top_message=top_message,
                            unsplash_photo=unsplash_photo)

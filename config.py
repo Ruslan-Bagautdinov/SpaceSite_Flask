@@ -5,6 +5,8 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 SECRET_KEY = getenv('SECRET_KEY', 'secret-key')
+ALGORITHM = getenv('ALGORITHM', 'HS256')
+
 
 ACCESS_TOKEN_EXPIRE_MINUTES = int(getenv('ACCESS_TOKEN_EXPIRE_MINUTES', '15'))
 REFRESH_TOKEN_EXPIRE_MINUTES = int(getenv('REFRESH_TOKEN_EXPIRE_MINUTES', '10080'))

@@ -1,24 +1,24 @@
+import base64
+import os
+import random
+import subprocess
+import tempfile
+from datetime import datetime
+from time import sleep
+
+import requests
+from PIL import Image
 from flask import (
     redirect,
     session,
     url_for
 )
-from datetime import datetime
-from time import sleep
-from PIL import Image
-import tempfile
-import base64
-import requests
-import random
-import os
-import subprocess
 
 from config import UNSPLASH_ACCESS_KEY, ALLOWED_EXTENSIONS, BASE_DIR
 from templates.icons import WARNING_ICON, WARNING_CLASS, OK_ICON, OK_CLASS
 
 
 def perform_migrations():
-
     alembic_path = os.path.join(BASE_DIR, 'alembic')
     if os.path.exists(alembic_path):
         print("Alembic directory found")
@@ -46,7 +46,7 @@ def perform_migrations():
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def resize_image(input_image_path, output_image_path, size_limit):

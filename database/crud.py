@@ -3,6 +3,10 @@ from werkzeug.security import generate_password_hash
 from database.models import db, User, UserProfile
 
 
+def get_all_users():
+    return User.query.all()
+
+
 def get_user_by_username(username: str):
     user = User.query.filter_by(username=username).first()
     return user
@@ -18,12 +22,9 @@ def get_user_profile(user_id: int):
     return user_profile
 
 
-def create_new_user(username, email, password):
-
-    new_user = User(
-        username=username,
-        email=email,
-        password_hash=generate_password_hash(password))
+def create_new_user(username, email, password, role='user'):
+    password_hash = generate_password_hash(password)
+    new_user = User(username=username, email=email, password_hash=password_hash, role=role)
     db.session.add(new_user)
     db.session.commit()
 
@@ -45,7 +46,6 @@ def update_user_profile(user_id: int,
                         phone_number: str | None,
                         user_photo: str | None,
                         user_age: int | None):
-
     user_profile = get_user_profile(user_id)
 
     if user_profile:
@@ -59,10 +59,17 @@ def update_user_profile(user_id: int,
     return False
 
 
+def update_user_role(user_id: int, role: str):
+    user = get_user(user_id)
+    if user:
+        user.role = role
+        db.session.commit()
+        return True
+    return False
+
+
 def delete_user(user_id: int):
-
     user = User.query.filter_by(id=user_id).first()
-
     if user:
         db.session.delete(user)
         db.session.commit()

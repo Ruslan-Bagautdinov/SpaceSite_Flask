@@ -1,21 +1,11 @@
-from flask import (
-    Blueprint,
-    redirect,
-    session,
-    url_for,
-    render_template,
-    request,
-    make_response)
-
+from flask import Blueprint, redirect, session, url_for, render_template, request, make_response
 from flask_jwt_extended import unset_jwt_cookies
-
 from werkzeug.security import check_password_hash
 
-from database.crud import get_user_by_username, create_new_user
 from auth.utils import redirect_authenticated_user
-from tools.functions import error_message
+from database.crud import get_user_by_username, create_new_user
 from templates.icons import USER_REGISTER_ICON
-
+from tools.functions import error_message
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -28,8 +18,7 @@ def register():
         password = request.form.get('password')
 
         if get_user_by_username(username=username) is not None:
-            return error_message(f"Username {username} is already registered!",
-                                 endpoint='auth.register')
+            return error_message(f"Username {username} is already registered!", endpoint='auth.register')
 
         create_new_user(username=username, email=email, password=password)
 
@@ -44,6 +33,7 @@ def register():
     top_message = session.get('top_message', None)
     if top_message:
         session.pop('top_message', None)
+
     return render_template('auth/register.html', top_message=top_message)
 
 
@@ -60,7 +50,7 @@ def login():
         top_message = {
             "class": "alert alert-info rounded",
             "icon": USER_REGISTER_ICON,
-            "text": f"You are logged in with the account: {username}"
+            "text": f"You are logged in as {user.role} with the account: {username}"
         }
         session['top_message'] = top_message
         return redirect_authenticated_user(username, 'root.root')
@@ -68,6 +58,7 @@ def login():
     top_message = session.get('top_message', None)
     if top_message:
         session.pop('top_message', None)
+
     return render_template('auth/login.html', top_message=top_message)
 
 

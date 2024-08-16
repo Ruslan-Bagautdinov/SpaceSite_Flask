@@ -1,10 +1,12 @@
+from datetime import timedelta
+
+from alembic.config import Config
 from flask import (Flask,
                    session,
                    request,
                    redirect,
                    url_for
                    )
-
 from flask_jwt_extended import (JWTManager,
                                 jwt_required,
                                 get_jwt_identity,
@@ -13,25 +15,19 @@ from flask_jwt_extended import (JWTManager,
                                 )
 from jwt.exceptions import ExpiredSignatureError
 
-
-from datetime import timedelta
-
-from alembic.config import Config
-
-
+from auth.middleware import jwt_middleware
+from auth.utils import redirect_not_authenticated_user
 from config import (SECRET_KEY,
                     DATABASE_URL,
                     ACCESS_TOKEN_EXPIRE_MINUTES,
                     REFRESH_TOKEN_EXPIRE_MINUTES
                     )
 from database.models import db
-from routers.root_router import root_bp
+from routers.admin_router import admin_bp
 from routers.auth_router import auth_bp
+from routers.root_router import root_bp
 from routers.user_router import user_bp
-
-from auth.utils import redirect_not_authenticated_user
 from tools.functions import perform_migrations
-
 
 app = Flask(__name__)
 
@@ -46,6 +42,8 @@ app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 
 jwt = JWTManager(app)
 
+jwt_middleware(app)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -57,6 +55,12 @@ alembic_config.set_main_option('sqlalchemy.url', DATABASE_URL)
 app.register_blueprint(root_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(user_bp, url_prefix='/user')
+app.register_blueprint(admin_bp, url_prefix='/admin')
+
+
+@app.context_processor
+def inject_current_user():
+    return dict(current_user=request.environ.get('current_user', None))
 
 
 @jwt_required(refresh=True)
@@ -83,7 +87,6 @@ def handle_expired_token(error):
 with app.app_context():
     perform_migrations()
     pass
-
 
 if __name__ == "__main__":
     with app.app_context():
