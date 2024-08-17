@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %} My Posts {% endblock %}
+{% block head %} {{ super() }} {% endblock %}
+
+{% block page_content %}
+<div class="container">
+    <h2>Posts</h2>
+    <div class="row">
+        {% if posts %}
+            {% for post in posts %}
+            <div class="col-12 mb-4">
+                <div class="card bg-dark text-white rounded border border-white" style="opacity: 0.8;">
+                    <div class="card-body">
+                        <a href="{% if current_user.role == 'admin' %}{{ url_for('admin.edit_post', post_id=post.id) }}{% else %}{{ url_for('user.edit_post_route', post_id=post.id) }}{% endif %}" class="card-link">
+                            <p class="card-text">{{ post.content[:50] }}{% if post.content|length > 50 %}...{% endif %}</p>
+                            <p class="card-text">{{ post.get_formatted_created_at() }}</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <p>No Posts Yet</p>
+            </div>
+        {% endif %}
+    </div>
+    {% if current_user.role == 'admin' %}
+        <a href="{{ url_for('admin.user_profile', user_id=user_id) }}" class="btn btn-secondary">Back</a>
+    {% endif %}
+</div>
+{% endblock %}

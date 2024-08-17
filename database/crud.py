@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from werkzeug.security import generate_password_hash
 
-from database.models import db, User, UserProfile
+from database.models import db, User, UserProfile, Post
 
 
 def get_all_users():
@@ -75,3 +77,41 @@ def delete_user(user_id: int):
         db.session.commit()
         return True
     return False
+
+
+def create_post(user_id, content):
+    new_post = Post(content=content, user_id=user_id, created_at=datetime.utcnow())
+    db.session.add(new_post)
+    db.session.commit()
+    return new_post
+
+
+def get_post(post_id):
+    return Post.query.get(post_id)
+
+
+def update_post(post_id, content=None):
+    post = get_post(post_id)
+    if post:
+        if content:
+            post.content = content
+        db.session.commit()
+        return True
+    return False
+
+
+def delete_post(post_id):
+    post = get_post(post_id)
+    if post:
+        db.session.delete(post)
+        db.session.commit()
+        return True
+    return False
+
+
+def get_all_posts():
+    return Post.query.all()
+
+
+def get_user_posts(user_id):
+    return Post.query.filter_by(user_id=user_id).all()

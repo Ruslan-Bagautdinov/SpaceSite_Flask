@@ -4,11 +4,17 @@
 
 {% block page_content %}
   <h1>All Users</h1>
-  <ul>
+  <div class="row">
     {% for user in users %}
-      <li>
-        <a href="{{ url_for('user.profile', user_id=user.id) }}">{{ user.username }}</a>
-      </li>
+      <div class="col-12 mb-4">
+        <div class="card bg-dark text-white rounded border border-white" style="opacity: 0.8;">
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="{{ url_for('admin.user_profile', user_id=user.id) }}" class="text-white">{{ user.username }}</a>
+            </h5>
+          </div>
+        </div>
+      </div>
     {% endfor %}
-  </ul>
+  </div>
 {% endblock %}

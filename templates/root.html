@@ -8,6 +8,28 @@
         <div class="col-12">
             <div class="image-container">
                 <img src="{{ unsplash_photo }}" class="img-fluid" alt="Cosmos Image">
+                <div class="posts-overlay">
+                    <div class="container">
+                        <div class="row">
+                            {% for post in posts %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card bg-dark text-white rounded border border-white" style="opacity: 0.8;">
+                                    <div class="card-body">
+                                        <p class="card-text">Post by {{ post.author.username }}, created at {{ post.get_formatted_created_at() }}</p>
+                                        <p class="card-text">{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <!-- Pagination -->
+                                {{ pagination.links }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

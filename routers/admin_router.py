@@ -12,23 +12,68 @@ from database.crud import (get_all_users,
                            update_user_role,
                            get_user_profile,
                            update_user_profile,
-                           delete_user
+                           delete_user,
+                           get_user_posts,
+                           get_post,
+                           update_post,
+                           delete_post
                            )
 from templates.icons import USER_DELETE_ICON
-from tools.functions import (read_and_encode_photo,
-                             save_upload_file,
+from tools.functions import (save_upload_file,
                              allowed_file,
                              error_message,
-                             ok_message
+                             read_and_encode_photo
                              )
 
 admin_bp = Blueprint('admin', __name__)
+
 
 @admin_bp.route('/users', methods=['GET'])
 @jwt_required()
 def all_users():
     users = get_all_users()
     return render_template('admin/all_users.html', users=users)
+
+
+@admin_bp.route('/user/<int:user_id>', methods=['GET'])
+@jwt_required()
+def user_profile(user_id):
+    user = get_user(user_id=user_id)
+    if not user:
+        return error_message('User not found!')
+
+    user_profile = get_user_profile(user_id=user_id)
+    if not user_profile:
+        return error_message('User profile not found!')
+
+    profile_for_page = {
+        "user_id": user.id,
+        'username': user.username,
+        'email': user.email,
+        "first_name": user_profile.first_name,
+        "last_name": user_profile.last_name,
+        'phone_number': user_profile.phone_number,
+        'user_age': user_profile.user_age,
+        'role': user.role
+    }
+
+    default_avatar_path = "static/img/default_avatar.jpg"
+    if user_profile.user_photo and os.path.exists(user_profile.user_photo):
+        photo_base64 = read_and_encode_photo(user_profile.user_photo)
+        if photo_base64:
+            profile_for_page['user_photo'] = photo_base64
+        else:
+            default_avatar_base64 = read_and_encode_photo(default_avatar_path)
+            profile_for_page['user_photo'] = default_avatar_base64
+    else:
+        default_avatar_base64 = read_and_encode_photo(default_avatar_path)
+        profile_for_page['user_photo'] = default_avatar_base64
+
+    current_user = get_jwt_identity()
+    current_user_obj = get_user_by_username(current_user)
+
+    return render_template('user/profile.html', profile=profile_for_page, current_user=current_user_obj)
+
 
 @admin_bp.route('/user/<int:user_id>/update', methods=['POST'])
 @jwt_required()
@@ -76,6 +121,7 @@ def update_user(user_id):
     else:
         return error_message('Failed to update user profile.')
 
+
 @admin_bp.route('/user/<int:user_id>/delete', methods=['GET', 'POST'])
 @jwt_required()
 def profile_delete(user_id):
@@ -105,14 +151,50 @@ def profile_delete(user_id):
             return error_message(message=f"User {result_user.username} not found!")
 
     csrf_token = session.get('csrf_token', None)
-    if current_user_obj.id == user_id:
-        response = render_template('user/confirm_delete.html',
-                                   username=result_user.username,
-                                   user_id=user_id,
-                                   csrf_token=csrf_token)
-    else:
-        response = render_template('admin/confirm_delete.html',
-                                   username=result_user.username,
-                                   user_id=user_id,
-                                   csrf_token=csrf_token)
+    response = render_template('user/confirm_delete.html',
+                               username=result_user.username,
+                               user_id=user_id,
+                               csrf_token=csrf_token)
     return response
+
+
+@admin_bp.route('/user/<int:user_id>/posts', methods=['GET'])
+@jwt_required()
+def user_posts(user_id):
+    user = get_user(user_id=user_id)
+    if not user:
+        return error_message('User not found!')
+
+    posts = get_user_posts(user_id)
+    current_user = get_jwt_identity()
+    current_user_obj = get_user_by_username(current_user)
+    return render_template('user/posts.html', posts=posts, user_id=user_id, current_user=current_user_obj)
+
+
+@admin_bp.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
+@jwt_required()
+def edit_post(post_id):
+    post = get_post(post_id)
+    if not post:
+        return error_message('Post not found')
+    if request.method == 'POST':
+        content = request.form.get('content')
+        update_post(post_id, content)
+        return redirect(url_for('admin.user_posts', user_id=post.user_id))
+    current_user = get_jwt_identity()
+    user = get_user_by_username(current_user)
+    return render_template('user/edit_post.html', post=post, current_user=user)
+
+
+@admin_bp.route('/post/<int:post_id>/delete', methods=['GET', 'POST'])
+@jwt_required()
+def delete_post(post_id):
+    post = get_post(post_id)
+    if not post:
+        return error_message('Post not found')
+    if request.method == 'POST':
+        delete_post(post_id)
+        return redirect(url_for('admin.user_posts', user_id=post.user_id))
+    current_user = get_jwt_identity()
+    user = get_user_by_username(current_user)
+    return render_template('user/edit_post.html', post=post, current_user=user)

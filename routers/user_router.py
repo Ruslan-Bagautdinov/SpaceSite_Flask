@@ -17,7 +17,12 @@ from database.crud import (get_user,
                            get_user_by_username,
                            get_user_profile,
                            update_user_profile,
-                           delete_user
+                           delete_user,
+                           get_user_posts,
+                           create_post,
+                           get_post,
+                           update_post,
+                           delete_post
                            )
 from templates.icons import USER_DELETE_ICON
 from tools.functions import (read_and_encode_photo,
@@ -28,6 +33,7 @@ from tools.functions import (read_and_encode_photo,
                              )
 
 user_bp = Blueprint('user', __name__)
+
 
 @user_bp.route('/me', methods=['GET'])
 @jwt_required()
@@ -45,6 +51,7 @@ def me():
 
     except Exception as e:
         return error_message(str(e))
+
 
 @user_bp.route('/profile/<int:user_id>', methods=['GET'])
 @jwt_required()
@@ -91,6 +98,7 @@ def profile(user_id):
                                top_message=top_message
                                )
     return response
+
 
 @user_bp.route('/profile/<int:user_id>/update', methods=['POST'])
 @jwt_required()
@@ -139,6 +147,7 @@ def profile_update(user_id):
     else:
         return error_message('User not found!')
 
+
 @user_bp.route('/profile/<int:user_id>/delete', methods=['GET', 'POST'])
 @jwt_required()
 def profile_delete(user_id):
@@ -167,3 +176,53 @@ def profile_delete(user_id):
                                user_id=user_id,
                                csrf_token=csrf_token)
     return response
+
+
+@user_bp.route('/posts', methods=['GET'])
+@jwt_required()
+def user_posts():
+    current_user = get_jwt_identity()
+    user = get_user_by_username(current_user)
+    posts = get_user_posts(user.id)
+    return render_template('user/posts.html', posts=posts, current_user=user)
+
+
+@user_bp.route('/post/create', methods=['GET', 'POST'])
+@jwt_required()
+def create_post_route():
+    if request.method == 'POST':
+        content = request.form.get('content')
+        current_user = get_jwt_identity()
+        user = get_user_by_username(current_user)
+        create_post(user.id, content)
+        return ok_message('Post created successfully', endpoint='user.user_posts')
+    return render_template('user/create_post.html')
+
+
+@user_bp.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
+@jwt_required()
+def edit_post_route(post_id):
+    post = get_post(post_id)
+    if not post:
+        return error_message('Post not found')
+    if request.method == 'POST':
+        content = request.form.get('content')
+        update_post(post_id, content)
+        return ok_message('Post updated successfully', endpoint='user.user_posts')
+    current_user = get_jwt_identity()
+    user = get_user_by_username(current_user)
+    return render_template('user/edit_post.html', post=post, current_user=user)
+
+
+@user_bp.route('/post/<int:post_id>/delete', methods=['GET', 'POST'])
+@jwt_required()
+def delete_post_route(post_id):
+    post = get_post(post_id)
+    if not post:
+        return error_message('Post not found')
+    if request.method == 'POST':
+        delete_post(post_id)
+        return ok_message('Post deleted successfully', endpoint='user.user_posts')
+    current_user = get_jwt_identity()
+    user = get_user_by_username(current_user)
+    return render_template('user/edit_post.html', post=post, current_user=user)

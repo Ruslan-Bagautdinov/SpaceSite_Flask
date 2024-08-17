@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %} Create Post {% endblock %}
+{% block head %} {{ super() }} {% endblock %}
+
+{% block page_content %}
+<div class="container">
+    <h2>Create New Post</h2>
+    <form method="POST">
+        <div class="mb-3">
+            <label for="content" class="form-label">Content:</label>
+            <textarea class="form-control" id="content" name="content" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Post</button>
+    </form>
+</div>
+{% endblock %}

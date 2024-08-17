@@ -108,6 +108,9 @@
                 <div class="mb-3  mx-3 text-center">
                     <input type="submit" class="btn btn-success" value="Save changes"/>
                     <a href="{% if current_user.role == 'admin' %}/admin/users{% else %}/{% endif %}" class="btn btn-secondary" role="button">Cancel</a>
+                    {% if current_user.role == 'admin' %}
+                        <a href="{{ url_for('admin.user_posts', user_id=profile.user_id) }}" class="btn btn-primary" role="button">View Posts</a>
+                    {% endif %}
                 </div>
 
                 <div class="border border-danger rounded">
@@ -154,14 +157,10 @@
             }
         }
 
-        // Add an event listener to the file input to preview the avatar
         document.getElementById('user_photo').addEventListener('change', previewAvatar);
 
-        // Add an event listener to the form to handle the submit event
         document.getElementById('avatarForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-            // Here you can add your AJAX request or other logic to handle the file upload
-            // For example, you can use the FormData API to send the file to the server
+            event.preventDefault();
             var formData = new FormData(event.target);
             fetch('/protected/profile/{{ profile.user_id }}/update', {
                 method: 'POST',
@@ -170,7 +169,6 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
-                    // Update the avatar image after the file is processed on the server
                     var output = document.getElementById('avatar');
                     output.src = URL.createObjectURL(event.target.user_photo.files[0]);
                 })

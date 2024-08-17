@@ -56,6 +56,16 @@
                         Profile
                     </a>
                     </li>
+                    <li><a class="dropdown-item" href="/user/posts">
+                        <i class="bi bi-file-text"></i>
+                        My Posts
+                    </a>
+                    </li>
+                    <li><a class="dropdown-item" href="/user/post/create">
+                        <i class="bi bi-file-plus"></i>
+                        Create Post
+                    </a>
+                    </li>
                     {% if current_user.role == 'admin' %}
                         <li><a class="dropdown-item" href="/admin/users">
                             <i class="bi bi-people"></i>
