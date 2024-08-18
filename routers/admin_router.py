@@ -188,13 +188,15 @@ def edit_post(post_id):
 
 @admin_bp.route('/post/<int:post_id>/delete', methods=['GET', 'POST'])
 @jwt_required()
-def delete_post(post_id):
+def delete_user_post(post_id):
     post = get_post(post_id)
     if not post:
         return error_message('Post not found')
     if request.method == 'POST':
-        delete_post(post_id)
-        return redirect(url_for('admin.user_posts', user_id=post.user_id))
+        if delete_post(post_id):  # Call the delete_post function from crud.py
+            return redirect(url_for('admin.user_posts', user_id=post.user_id))
+        else:
+            return error_message('Failed to delete post')
     current_user = get_jwt_identity()
     user = get_user_by_username(current_user)
     return render_template('user/edit_post.html', post=post, current_user=user)

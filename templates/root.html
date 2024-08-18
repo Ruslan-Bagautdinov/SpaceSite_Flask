@@ -1,13 +1,20 @@
 {% extends "base.html" %}
 {% block title %} Home page {% endblock %}
-{% block head %} {{ super() }} {% endblock %}
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mystyle.css') }}">
+<style>
+    .image-container {
+        background-image: url('{{ unsplash_photo }}');
+    }
+</style>
+{% endblock %}
 
 {% block unsplash_content %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="image-container">
-                <img src="{{ unsplash_photo }}" class="img-fluid" alt="Cosmos Image">
                 <div class="posts-overlay">
                     <div class="container">
                         <div class="row">
@@ -24,8 +31,9 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <!-- Pagination -->
-                                {{ pagination.links }}
+                                <div class="pagination">
+                                    {{ pagination.links }}
+                                </div>
                             </div>
                         </div>
                     </div>

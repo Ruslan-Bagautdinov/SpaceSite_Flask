@@ -25,7 +25,7 @@
             </div>
         {% endif %}
     </div>
-    {% if current_user.role == 'admin' %}
+    {% if current_user.role == 'admin' and user_id is defined %}
         <a href="{{ url_for('admin.user_profile', user_id=user_id) }}" class="btn btn-secondary">Back</a>
     {% endif %}
 </div>

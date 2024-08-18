@@ -1,17 +1,27 @@
 {% extends "base.html" %}
 {% block title %} Edit Post {% endblock %}
-{% block head %} {{ super() }} {% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .modal-header {
+        color: #000;
+    }
+    .modal-body {
+        color: #000;
+    }
+</style>
+{% endblock %}
 
 {% block page_content %}
 <div class="container">
     <h2>Edit Post</h2>
-    <form method="POST">
+    <form method="POST" action="{% if current_user.role == 'admin' %}{{ url_for('admin.edit_post', post_id=post.id) }}{% else %}{{ url_for('user.edit_post_route', post_id=post.id) }}{% endif %}">
         <div class="mb-3">
             <label for="content" class="form-label">Content:</label>
             <textarea class="form-control" id="content" name="content" required>{{ post.content }}</textarea>
         </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a href="{{ url_for('user.user_posts') }}" class="btn btn-secondary">Cancel</a>
+        <a href="{% if current_user.role == 'admin' %}{{ url_for('admin.user_posts', user_id=post.user_id) }}{% else %}{{ url_for('user.user_posts') }}{% endif %}" class="btn btn-secondary">Cancel</a>
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
     </form>
 
@@ -28,7 +38,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <a href="{{ url_for('user.delete_post_route', post_id=post.id) }}" class="btn btn-danger">Yes</a>
+                    <form method="POST" action="{% if current_user.role == 'admin' %}{{ url_for('admin.delete_user_post', post_id=post.id) }}{% else %}{{ url_for('user.delete_post_route', post_id=post.id) }}{% endif %}">
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                    </form>
                 </div>
             </div>
         </div>
