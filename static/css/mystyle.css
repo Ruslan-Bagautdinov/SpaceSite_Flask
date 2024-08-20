@@ -94,6 +94,7 @@ body.light-theme .custom-navbar .navbar-toggler-icon {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed; /* Keep the background image stationary */
+    border-radius: 15px; /* Add rounded corners */
 }
 
 .posts-overlay {
@@ -137,4 +138,19 @@ body.light-theme .custom-navbar .navbar-toggler-icon {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+
+.modal-header {
+    background-color: #343a41;
+    color: #fff;
+}
+
+.modal-body {
+    background-color: #343a41;
+    color: #fff;
+}
+
+.modal-footer {
+    background-color: #343a41;
+    color: #fff;
 }

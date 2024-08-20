@@ -32,7 +32,7 @@ def root():
 
     # Pagination logic
     page = request.args.get(get_page_parameter(), type=int, default=1)
-    per_page = 21
+    per_page = 15
     offset = (page - 1) * per_page
     total = len(get_all_posts())
     posts = get_all_posts()[offset:offset + per_page]

@@ -43,7 +43,7 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        truncated_content = (self.content[:200] + '...') if len(self.content) > 200 else self.content
+        truncated_content = (self.content[:250] + '...') if len(self.content) > 200 else self.content
         return f'<Post {truncated_content}>'
 
     def get_formatted_created_at(self):
