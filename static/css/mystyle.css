@@ -152,23 +152,31 @@ body.dark-theme .dropdown-item:focus {
 }
 
 /* Light Theme Card */
-body.light-theme #posts-row .card.card-post {
+body.light-theme .card.card-post {
     background-color: rgba(248,249,250,1) !important; /* Match the starting gradient color */
     border: 1px solid #212529 !important;
 }
 
-body.light-theme #posts-row .card.card-post .card-body.card-post-body {
+body.light-theme .card.card-post .card-body.card-post-body {
     color: #222222 !important;
 }
 
+body.light-theme .card.card-post .card-body.card-post-body .card-text {
+    color: #000000 !important; /* Black text for light theme */
+}
+
 /* Dark Theme Card */
-body.dark-theme #posts-row .card.card-post {
+body.dark-theme .card.card-post {
     background-color: rgba(52,58,64,1) !important; /* Match the starting gradient color */
     border: 1px solid #eeeeee !important;
 }
 
-body.dark-theme #posts-row .card.card-post .card-body.card-post-body {
+body.dark-theme .card.card-post .card-body.card-post-body {
     color: #eeeeee !important;
+}
+
+body.dark-theme .card.card-post .card-body.card-post-body .card-text {
+    color: #ffffff !important; /* White text for dark theme */
 }
 
 .card-title {

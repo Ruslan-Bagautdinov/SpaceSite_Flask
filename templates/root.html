@@ -21,8 +21,8 @@
                         <div class="row">
                             {% for post in posts %}
                             <div class="col-md-4 mb-4">
-                                <a href="#" class="card bg-dark text-white rounded border border-white" style="opacity: 0.8; text-decoration: none; display: block;" data-toggle="modal" data-target="#postModal{{ post.id }}">
-                                    <div class="card-body">
+                                <a href="#" class="card bg-dark text-white rounded border border-white card-post" style="opacity: 0.8; text-decoration: none; display: block;" data-toggle="modal" data-target="#postModal{{ post.id }}">
+                                    <div class="card-body card-post-body">
                                         <p class="card-text">Post by {{ post.author.username }}, created at {{ post.get_formatted_created_at() }}</p>
                                         <p class="card-text">{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
                                     </div>

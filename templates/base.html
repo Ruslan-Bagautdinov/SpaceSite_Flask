@@ -106,12 +106,12 @@
                 });
 
                 // Update theme classes for posts
-                document.querySelectorAll('#posts-row .card.card-post').forEach(function (card) {
+                document.querySelectorAll('.card.card-post').forEach(function (card) {
                     card.classList.remove('light-theme', 'dark-theme');
                     card.classList.add(theme + '-theme');
                 });
 
-                document.querySelectorAll('#posts-row .card-body.card-post-body').forEach(function (cardBody) {
+                document.querySelectorAll('.card-body.card-post-body').forEach(function (cardBody) {
                     cardBody.classList.remove('light-theme', 'dark-theme');
                     cardBody.classList.add(theme + '-theme');
                 });
@@ -128,11 +128,11 @@
             document.querySelector(`.theme-toggle[data-theme="${currentTheme}"]`).classList.add('active');
 
             // Update theme classes for posts
-            document.querySelectorAll('#posts-row .card.card-post').forEach(function (card) {
+            document.querySelectorAll('.card.card-post').forEach(function (card) {
                 card.classList.add(currentTheme + '-theme');
             });
 
-            document.querySelectorAll('#posts-row .card-body.card-post-body').forEach(function (cardBody) {
+            document.querySelectorAll('.card-body.card-post-body').forEach(function (cardBody) {
                 cardBody.classList.add(currentTheme + '-theme');
             });
         } else {
@@ -144,11 +144,11 @@
             document.querySelector('.theme-toggle[data-theme="light"]').classList.add('active');
 
             // Update theme classes for posts
-            document.querySelectorAll('#posts-row .card.card-post').forEach(function (card) {
+            document.querySelectorAll('.card.card-post').forEach(function (card) {
                 card.classList.add('light-theme');
             });
 
-            document.querySelectorAll('#posts-row .card-body.card-post-body').forEach(function (cardBody) {
+            document.querySelectorAll('.card-body.card-post-body').forEach(function (cardBody) {
                 cardBody.classList.add('light-theme');
             });
         }

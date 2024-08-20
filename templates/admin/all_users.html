@@ -10,7 +10,7 @@
         <div class="card bg-dark text-white rounded border border-white" style="opacity: 0.8;">
           <div class="card-body">
             <h5 class="card-title">
-              <a href="{{ url_for('admin.user_profile', user_id=user.id) }}" class="text-white">{{ user.username }}</a>
+              <a style="text-decoration: none" href="{{ url_for('admin.user_profile', user_id=user.id) }}" class="text-white">{{ user.username }} </a>
             </h5>
           </div>
         </div>
