@@ -189,3 +189,37 @@ body.dark-theme .dropdown-item:focus {
     background-color: rgba(52,58,64,1);
     color: rgba(248,249,250,1);
 }
+
+/* Light Theme Modal */
+body.light-theme .modal-content {
+    background-color: rgba(248,249,250,1);
+    color: #222222;
+}
+
+body.light-theme .modal-header,
+body.light-theme .modal-body,
+body.light-theme .modal-footer {
+    background-color: rgba(248,249,250,1);
+    color: #222222;
+}
+
+body.light-theme .modal-header .close {
+    color: #222222;
+}
+
+/* Dark Theme Modal */
+body.dark-theme .modal-content {
+    background-color: rgba(52,58,64,1);
+    color: #eeeeee;
+}
+
+body.dark-theme .modal-header,
+body.dark-theme .modal-body,
+body.dark-theme .modal-footer {
+    background-color: rgba(52,58,64,1);
+    color: #eeeeee;
+}
+
+body.dark-theme .modal-header .close {
+    color: #eeeeee;
+}

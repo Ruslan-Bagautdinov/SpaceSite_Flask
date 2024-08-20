@@ -183,8 +183,17 @@ def profile_delete(user_id):
 def user_posts():
     current_user = get_jwt_identity()
     user = get_user_by_username(current_user)
-    posts = get_user_posts(user.id)
-    return render_template('user/posts.html', posts=posts, current_user=user)
+    page = request.args.get('page', 1, type=int)
+    per_page = 15
+    posts = get_user_posts(user.id, page=page, per_page=per_page)
+    total_posts = get_user_posts(user.id, count=True)
+    pagination = {
+        'page': page,
+        'per_page': per_page,
+        'total': total_posts,
+        'pages': (total_posts // per_page) + (1 if total_posts % per_page else 0)
+    }
+    return render_template('user/posts.html', posts=posts, current_user=user, pagination=pagination)
 
 
 @user_bp.route('/post/create', methods=['GET', 'POST'])

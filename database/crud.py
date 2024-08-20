@@ -113,5 +113,10 @@ def get_all_posts():
     return Post.query.all()
 
 
-def get_user_posts(user_id):
-    return Post.query.filter_by(user_id=user_id).all()
+def get_user_posts(user_id, page=1, per_page=15, count=False):
+    if count:
+        return Post.query.filter_by(user_id=user_id).count()
+    else:
+        return Post.query.filter_by(user_id=user_id).order_by(Post.created_at.desc()).paginate(page=page,
+                                                                                               per_page=per_page,
+                                                                                               error_out=False).items

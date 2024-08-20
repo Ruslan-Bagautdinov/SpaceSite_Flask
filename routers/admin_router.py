@@ -165,10 +165,20 @@ def user_posts(user_id):
     if not user:
         return error_message('User not found!')
 
-    posts = get_user_posts(user_id)
+    page = request.args.get('page', 1, type=int)
+    per_page = 15
+    posts = get_user_posts(user_id, page=page, per_page=per_page)
+    total_posts = get_user_posts(user_id, count=True)
+    pagination = {
+        'page': page,
+        'per_page': per_page,
+        'total': total_posts,
+        'pages': (total_posts // per_page) + (1 if total_posts % per_page else 0)
+    }
     current_user = get_jwt_identity()
     current_user_obj = get_user_by_username(current_user)
-    return render_template('user/posts.html', posts=posts, user_id=user_id, current_user=current_user_obj)
+    return render_template('user/posts.html', posts=posts, user_id=user_id, current_user=current_user_obj,
+                           pagination=pagination)
 
 
 @admin_bp.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
