@@ -151,13 +151,24 @@ body.dark-theme .dropdown-item:focus {
     overflow-y: hidden; /* Allow scrolling within the container */
 }
 
-.posts-overlay .card {
-    background-color: rgba(0, 0, 0, 0.5); /* 50% opacity */
-    border: 1px solid rgba(248,249,250,1);
-    margin: 10px;
-    padding: 15px;
-    width: 100%;
-    max-width: 100%; /* Make the posts wider */
+/* Light Theme Card */
+body.light-theme #posts-row .card.card-post {
+    background-color: rgba(248,249,250,1) !important; /* Match the starting gradient color */
+    border: 1px solid #212529 !important;
+}
+
+body.light-theme #posts-row .card.card-post .card-body.card-post-body {
+    color: #222222 !important;
+}
+
+/* Dark Theme Card */
+body.dark-theme #posts-row .card.card-post {
+    background-color: rgba(52,58,64,1) !important; /* Match the starting gradient color */
+    border: 1px solid #eeeeee !important;
+}
+
+body.dark-theme #posts-row .card.card-post .card-body.card-post-body {
+    color: #eeeeee !important;
 }
 
 .card-title {
