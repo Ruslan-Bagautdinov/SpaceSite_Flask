@@ -115,6 +115,12 @@
                     cardBody.classList.remove('light-theme', 'dark-theme');
                     cardBody.classList.add(theme + '-theme');
                 });
+
+                // Update dropdown menu border color
+                var dropdownMenu = document.getElementById('dropdown-menu-list');
+                if (dropdownMenu) {
+                    dropdownMenu.style.borderColor = theme === 'light' ? '#000000' : '#000000';
+                }
             });
         });
 
@@ -135,6 +141,12 @@
             document.querySelectorAll('.card-body.card-post-body').forEach(function (cardBody) {
                 cardBody.classList.add(currentTheme + '-theme');
             });
+
+            // Update dropdown menu border color
+            var dropdownMenu = document.getElementById('dropdown-menu-list');
+            if (dropdownMenu) {
+                dropdownMenu.style.borderColor = currentTheme === 'light' ? '#000000' : '#000000';
+            }
         } else {
             // If no preference is saved, default to light theme
             document.body.classList.add('light-theme');
@@ -151,6 +163,12 @@
             document.querySelectorAll('.card-body.card-post-body').forEach(function (cardBody) {
                 cardBody.classList.add('light-theme');
             });
+
+            // Update dropdown menu border color
+            var dropdownMenu = document.getElementById('dropdown-menu-list');
+            if (dropdownMenu) {
+                dropdownMenu.style.borderColor = '#000000';
+            }
         }
     </script>
 

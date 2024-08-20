@@ -86,33 +86,37 @@ body.light-theme .custom-navbar .navbar-toggler-icon {
 }
 
 /* Light Theme Dropdown Menu */
-body.light-theme .dropdown-menu {
+body.light-theme #dropdown-menu-list {
     background-color: rgba(248,249,250,1); /* Match the starting gradient color */
     color: #222222;
+    border: 1px solid #000000; /* Black border for light theme */
+    border-radius: 5px; /* Rounded corners */
 }
 
-body.light-theme .dropdown-item {
+body.light-theme #dropdown-menu-list .dropdown-item {
     color: #222222;
 }
 
-body.light-theme .dropdown-item:hover,
-body.light-theme .dropdown-item:focus {
+body.light-theme #dropdown-menu-list .dropdown-item:hover,
+body.light-theme #dropdown-menu-list .dropdown-item:focus {
     background-color: #6c757d;
     color: #ffffff;
 }
 
 /* Dark Theme Dropdown Menu */
-body.dark-theme .dropdown-menu {
+body.dark-theme #dropdown-menu-list {
     background-color: rgba(52,58,64,1); /* Match the starting gradient color */
     color: #eeeeee;
+    border: 1px solid #000000; /* Black border for dark theme */
+    border-radius: 5px; /* Rounded corners */
 }
 
-body.dark-theme .dropdown-item {
+body.dark-theme #dropdown-menu-list .dropdown-item {
     color: #eeeeee;
 }
 
-body.dark-theme .dropdown-item:hover,
-body.dark-theme .dropdown-item:focus {
+body.dark-theme #dropdown-menu-list .dropdown-item:hover,
+body.dark-theme #dropdown-menu-list .dropdown-item:focus {
     background-color: rgba(52,58,64,1);
     color: rgba(248,249,250,1);
 }
