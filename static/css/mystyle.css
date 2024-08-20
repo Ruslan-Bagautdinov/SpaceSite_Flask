@@ -4,8 +4,9 @@ html, body {
     padding: 0;
 }
 
+/* Light Theme */
 body.light-theme {
-    background-color: #808181;
+    background-color: rgba(248,249,250,1);
     color: #222222;
     min-height: 100vh;
     margin: 0;
@@ -30,12 +31,13 @@ body.light-theme::before {
 }
 
 body.light-theme .custom-navbar {
-    background-color: #808181;
+    background-color: rgba(248,249,250,1); /* Match the starting gradient color */
     color: #222222;
 }
 
+/* Dark Theme */
 body.dark-theme {
-    background-color: #343a41;
+    background-color: rgba(52,58,64,1);
     color: #eeeeee;
     min-height: 100vh;
     margin: 0;
@@ -53,17 +55,18 @@ body.dark-theme::before {
     z-index: -1;
     background: linear-gradient(
         180deg,
-        rgba(33,37,41,1) 0%,
-        rgba(33,37,41,1) 45%,
+        rgba(52,58,64,1) 0%,
+        rgba(52,58,64,1) 45%,
         rgba(99,107,115,1) 100%
     );
 }
 
 body.dark-theme .custom-navbar {
-    background-color: #343a41;
+    background-color: rgba(52,58,64,1); /* Match the starting gradient color */
     color: #eeeeee;
 }
 
+/* Additional styles for navbar elements */
 body.light-theme .custom-navbar .navbar-brand,
 body.light-theme .custom-navbar .nav-link {
     color: #212529;
@@ -80,6 +83,38 @@ body.light-theme .custom-navbar .navbar-toggler-icon {
 
 .theme-toggle.active {
     font-weight: bold;
+}
+
+/* Light Theme Dropdown Menu */
+body.light-theme .dropdown-menu {
+    background-color: rgba(248,249,250,1); /* Match the starting gradient color */
+    color: #222222;
+}
+
+body.light-theme .dropdown-item {
+    color: #222222;
+}
+
+body.light-theme .dropdown-item:hover,
+body.light-theme .dropdown-item:focus {
+    background-color: #6c757d;
+    color: #ffffff;
+}
+
+/* Dark Theme Dropdown Menu */
+body.dark-theme .dropdown-menu {
+    background-color: rgba(52,58,64,1); /* Match the starting gradient color */
+    color: #eeeeee;
+}
+
+body.dark-theme .dropdown-item {
+    color: #eeeeee;
+}
+
+body.dark-theme .dropdown-item:hover,
+body.dark-theme .dropdown-item:focus {
+    background-color: rgba(52,58,64,1);
+    color: rgba(248,249,250,1);
 }
 
 .image-container {
@@ -118,7 +153,7 @@ body.light-theme .custom-navbar .navbar-toggler-icon {
 
 .posts-overlay .card {
     background-color: rgba(0, 0, 0, 0.5); /* 50% opacity */
-    border: 1px solid #fff;
+    border: 1px solid rgba(248,249,250,1);
     margin: 10px;
     padding: 15px;
     width: 100%;
@@ -141,16 +176,16 @@ body.light-theme .custom-navbar .navbar-toggler-icon {
 }
 
 .modal-header {
-    background-color: #343a41;
-    color: #fff;
+    background-color: rgba(52,58,64,1);
+    color: rgba(248,249,250,1);
 }
 
 .modal-body {
-    background-color: #343a41;
-    color: #fff;
+    background-color: rgba(52,58,64,1);
+    color: rgba(248,249,250,1);
 }
 
 .modal-footer {
-    background-color: #343a41;
-    color: #fff;
+    background-color: rgba(52,58,64,1);
+    color: rgba(248,249,250,1);
 }
