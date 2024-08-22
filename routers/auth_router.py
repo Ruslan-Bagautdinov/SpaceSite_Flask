@@ -3,7 +3,7 @@ from flask_jwt_extended import unset_jwt_cookies
 from werkzeug.security import check_password_hash
 
 from auth.utils import redirect_authenticated_user
-from database.crud import get_user_by_username, create_new_user
+from database.crud import get_user_by_username, new_user_check, create_new_user
 from templates.icons import USER_REGISTER_ICON
 from tools.functions import error_message
 
@@ -17,8 +17,11 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        if get_user_by_username(username=username) is not None:
+        existing_user_check = new_user_check(username=username, email=email)
+        if existing_user_check == "username":
             return error_message(f"Username {username} is already registered!", endpoint='auth.register')
+        elif existing_user_check == "email":
+            return error_message(f"Email {email} is already registered!", endpoint='auth.register')
 
         create_new_user(username=username, email=email, password=password)
 

@@ -14,13 +14,28 @@ def get_user_by_username(username: str):
     return user
 
 
+def get_user_by_email(email: str):
+    user = User.query.filter_by(email=email).first()
+    return user
+
+
+def new_user_check(username: str, email: str):
+    user = User.query.filter((User.username == username) | (User.email == email)).first()
+    if user:
+        if user.username == username:
+            return "username"
+        if user.email == email:
+            return "email"
+    return None
+
+
 def get_user(user_id: int):
     user = User.query.filter_by(id=user_id).first()
     return user
 
 
 def get_user_profile(user_id: int):
-    user_profile = UserProfile.query.filter_by(id=user_id).one()
+    user_profile = UserProfile.query.filter_by(user_id=user_id).one()
     return user_profile
 
 
@@ -120,3 +135,6 @@ def get_user_posts(user_id, page=1, per_page=15, count=False):
         return Post.query.filter_by(user_id=user_id).order_by(Post.created_at.desc()).paginate(page=page,
                                                                                                per_page=per_page,
                                                                                                error_out=False).items
+
+
+
