@@ -22,9 +22,11 @@ def get_user_by_email(email: str):
 def new_user_check(username: str, email: str):
     user = User.query.filter((User.username == username) | (User.email == email)).first()
     if user:
-        if user.username == username:
+        if user.username == username and user.email == email:
+            return "both"
+        elif user.username == username:
             return "username"
-        if user.email == email:
+        elif user.email == email:
             return "email"
     return None
 
@@ -135,6 +137,3 @@ def get_user_posts(user_id, page=1, per_page=15, count=False):
         return Post.query.filter_by(user_id=user_id).order_by(Post.created_at.desc()).paginate(page=page,
                                                                                                per_page=per_page,
                                                                                                error_out=False).items
-
-
-

@@ -22,6 +22,9 @@ def register():
             return error_message(f"Username {username} is already registered!", endpoint='auth.register')
         elif existing_user_check == "email":
             return error_message(f"Email {email} is already registered!", endpoint='auth.register')
+        elif existing_user_check == "both":
+            return error_message(f"Username {username} and Email {email} are already registered!",
+                                 endpoint='auth.register')
 
         create_new_user(username=username, email=email, password=password)
 
