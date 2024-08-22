@@ -26,7 +26,7 @@ from database.crud import (get_user,
                            )
 from templates.icons import USER_DELETE_ICON
 from tools.functions import (read_and_encode_photo,
-                             save_upload_file,
+                             save_file_with_uuid,
                              allowed_file,
                              error_message,
                              ok_message
@@ -123,10 +123,7 @@ def profile_update(user_id):
             return error_message('File must be an image!',
                                  endpoint="user.me")
 
-        filename = secure_filename(user_photo.filename)
-        destination = os.path.join(IMAGE_DIR, filename)
-        save_upload_file(user_photo, destination)
-        photo = destination
+        photo = save_file_with_uuid(user_photo, IMAGE_DIR)
 
         if previous_photo_path and os.path.exists(previous_photo_path):
             os.remove(previous_photo_path)
@@ -139,8 +136,7 @@ def profile_update(user_id):
                                  last_name=last_name,
                                  phone_number=phone_number,
                                  user_age=user_age,
-                                 user_photo=photo
-                                 )
+                                 user_photo=photo)
     if update:
         return ok_message(f"{user.username}, Your profile has been updated!",
                           endpoint="user.me")

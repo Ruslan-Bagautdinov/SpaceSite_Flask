@@ -19,7 +19,7 @@ from database.crud import (get_all_users,
                            delete_post
                            )
 from templates.icons import USER_DELETE_ICON
-from tools.functions import (save_upload_file,
+from tools.functions import (save_file_with_uuid,
                              allowed_file,
                              error_message,
                              read_and_encode_photo
@@ -97,10 +97,7 @@ def update_user(user_id):
         if not allowed_file(user_photo.filename):
             return error_message('File must be an image!')
 
-        filename = secure_filename(user_photo.filename)
-        destination = os.path.join(IMAGE_DIR, filename)
-        save_upload_file(user_photo, destination)
-        photo = destination
+        photo = save_file_with_uuid(user_photo, IMAGE_DIR)
 
         if previous_photo_path and os.path.exists(previous_photo_path):
             os.remove(previous_photo_path)

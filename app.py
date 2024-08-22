@@ -27,7 +27,6 @@ from routers.admin_router import admin_bp
 from routers.auth_router import auth_bp
 from routers.root_router import root_bp
 from routers.user_router import user_bp
-from tools.functions import perform_migrations
 
 app = Flask(__name__)
 
@@ -84,9 +83,6 @@ def handle_expired_token(error):
     return refresh_expiring_jwts()
 
 
-with app.app_context():
-    perform_migrations()
-    pass
 
 if __name__ == "__main__":
     with app.app_context():
