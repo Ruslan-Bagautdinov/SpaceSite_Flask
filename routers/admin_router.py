@@ -3,7 +3,6 @@ import os
 from flask import Blueprint, session, render_template, request, redirect, url_for
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import check_password_hash
-from werkzeug.utils import secure_filename
 
 from config import IMAGE_DIR
 from database.crud import (get_all_users,

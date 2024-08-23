@@ -38,7 +38,7 @@ def save_upload_file(upload_file, destination: str):
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
         temp_filename = temp_file.name
         with open(temp_filename, 'wb') as out_file:
-            while content := upload_file.stream.read(1024):  # Read file in chunks
+            while content := upload_file.stream.read(1024):
                 out_file.write(content)
 
     try:
@@ -142,7 +142,7 @@ def save_file_with_uuid(upload_file, destination_dir: str):
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
         temp_filename = temp_file.name
         with open(temp_filename, 'wb') as out_file:
-            while content := upload_file.stream.read(1024):  # Read file in chunks
+            while content := upload_file.stream.read(1024):
                 out_file.write(content)
 
     try:
