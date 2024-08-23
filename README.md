@@ -17,15 +17,23 @@
 - MySQL Database: Utilizes a MySQL database for efficient and high-performance data handling, ensuring smooth operations even under high load.
 
 ## Installation
-Clone the Repository
+
+
+### Install with Docker
+
+1. Clone the Repository
 
 ```bash
 git clone https://github.com/Ruslan-Bagautdinov/SpaceSite_Flask.git
 cd SpaceSite_Flask
 ```
 
-### Install with Docker
+2. Fill in the .env File: Copy sample.env to .env and fill in the necessary values.
+```shell
+cp sample.env .env
+```
 
+3. Build and Run with Docker Compose:
 ```bash
 docker-compose up --build
 ```
@@ -74,9 +82,14 @@ Ensure your MySQL database is running and configured according to the parameters
 alembic upgrade head
 ```
 
-6. Run the Application:
+6. Run the Initialization Script:
 ```bash
-flask run
+python init_db.py
+```
+
+7. Run the Application:
+```bash
+python app.py
 ```
 
 ## Users

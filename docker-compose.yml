@@ -5,26 +5,29 @@ services:
       context: .
       dockerfile: Dockerfile.flask
     ports:
-     - "5000:5000"
+      - "5000:5000"
     volumes:
-     - .:/app
-     - alembic:/app/alembic
-     - photo:/app/photo
+      - .:/app
+      - alembic:/app/alembic
+      - photo:/app/photo
     depends_on:
-     - db
+      db:
+        condition: service_healthy
     env_file:
       - .env
-    environment:
-      - MYSQL_HOST=db
-      - MYSQL_PORT=3306
   db:
     build:
       context: .
       dockerfile: Dockerfile.mysql
     volumes:
-     - db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
     env_file:
-     - .env
+      - .env
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_PASSWORD"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 volumes:
     db_data: {}
     alembic: {}

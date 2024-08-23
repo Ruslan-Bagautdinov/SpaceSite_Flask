@@ -4,9 +4,10 @@ WORKDIR /app
 
 COPY . /app
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt && \
+    chmod +x /app/entrypoint.sh && \
+    chmod +x /app/init_db.py
 
 EXPOSE 5000
 
-# Command to initialize the database and then start the Flask app
-CMD ["sh", "-c", "python init_db.py && flask run --host=0.0.0.0"]
+CMD ["sh", "-c", "python init_db.py && python app.py"]
