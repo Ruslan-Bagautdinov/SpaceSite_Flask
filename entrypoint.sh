@@ -1,11 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 
-until mysqladmin ping -h db -u root -p$MYSQL_PASSWORD --silent; do
-  echo "Waiting for database to be ready..."
-  sleep 2
-done
+wait_for_db() {
+    echo "Waiting for database..."
+    while ! mysqladmin ping -h db --silent; do
+        sleep 1
+    done
+    echo "Database is ready!"
+}
 
-echo "Database is ready!"
+wait_for_db
 
 alembic upgrade head
 

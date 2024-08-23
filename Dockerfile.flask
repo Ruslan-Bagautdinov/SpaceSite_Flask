@@ -5,9 +5,12 @@ WORKDIR /app
 COPY . /app
 
 RUN pip install --no-cache-dir -r requirements.txt && \
-    chmod +x /app/entrypoint.sh && \
-    chmod +x /app/init_db.py
+    chmod +x /app/entrypoint.sh
 
 EXPOSE 5000
 
-CMD ["sh", "-c", "python init_db.py && python app.py"]
+ENV FLASK_ENV=development
+
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]

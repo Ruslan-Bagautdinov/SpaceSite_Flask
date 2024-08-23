@@ -11,10 +11,9 @@ services:
       - alembic:/app/alembic
       - photo:/app/photo
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     env_file:
-      - .env
+      - sample.env
   db:
     build:
       context: .
@@ -22,12 +21,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     env_file:
-      - .env
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_PASSWORD"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      - sample.env
 volumes:
     db_data: {}
     alembic: {}

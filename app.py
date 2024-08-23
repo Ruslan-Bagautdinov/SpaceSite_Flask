@@ -23,7 +23,6 @@ from config import (SECRET_KEY,
                     REFRESH_TOKEN_EXPIRE_MINUTES
                     )
 from database.models import db
-from init_db import init_db
 from routers.admin_router import admin_bp
 from routers.auth_router import auth_bp
 from routers.root_router import root_bp
@@ -84,8 +83,6 @@ def handle_expired_token(error):
     return refresh_expiring_jwts()
 
 
-
 if __name__ == "__main__":
     with app.app_context():
-        init_db()
         app.run(debug=True)

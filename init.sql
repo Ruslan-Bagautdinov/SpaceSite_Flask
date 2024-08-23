@@ -1,1 +1,1 @@
-ALTER DATABASE spacesite_flask CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+ALTER DATABASE mysql CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
