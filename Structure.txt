@@ -1,6 +1,7 @@
 Project folder
 ├───📁 alembic/
 │   ├───📁 versions/
+│   │   └───📄 271742bba0c0_initial_migration.py
 │   ├───📄 env.py
 │   ├───📄 README
 │   └───📄 script.py.mako
@@ -49,17 +50,17 @@ Project folder
 │   └───📄 __init__.py
 ├───📁 __pycache__/
 │   ├───📄 app.cpython-311.pyc
-│   └───📄 config.cpython-311.pyc
+│   └───📄 app_config.cpython-311.pyc
 ├───📄 .dockerignore
 ├───📄 alembic.ini
 ├───📄 app.py
-├───📄 config.py
-├───📄 CONTRIBUTING.md
+├───📄 app_config.py
 ├───📄 docker-compose.yml
 ├───📄 Dockerfile.flask
 ├───📄 Dockerfile.mysql
+├───📄 entrypoint.sh
 ├───📄 init.sql
-├───📄 LICENSE.md
 ├───📄 README.md
 ├───📄 requirements.txt
+├───📄 sample.env
 └───📄 Structure.txt

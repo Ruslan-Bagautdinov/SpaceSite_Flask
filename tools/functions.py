@@ -12,7 +12,7 @@ from flask import (
     url_for
 )
 
-from config import UNSPLASH_ACCESS_KEY, ALLOWED_EXTENSIONS
+from app_config import UNSPLASH_ACCESS_KEY, ALLOWED_EXTENSIONS
 from templates.icons import WARNING_ICON, WARNING_CLASS, OK_ICON, OK_CLASS
 
 

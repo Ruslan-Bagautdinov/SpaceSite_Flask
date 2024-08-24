@@ -4,7 +4,7 @@ from flask import Blueprint, session, render_template, request, redirect, url_fo
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import check_password_hash
 
-from config import IMAGE_DIR
+from app_config import IMAGE_DIR
 from database.crud import (get_all_users,
                            get_user,
                            get_user_by_username,
@@ -199,7 +199,7 @@ def delete_user_post(post_id):
     if not post:
         return error_message('Post not found')
     if request.method == 'POST':
-        if delete_post(post_id):  # Call the delete_post function from crud.py
+        if delete_post(post_id):
             return redirect(url_for('admin.user_posts', user_id=post.user_id))
         else:
             return error_message('Failed to delete post')

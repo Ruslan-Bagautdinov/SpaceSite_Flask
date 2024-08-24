@@ -17,11 +17,11 @@ from jwt.exceptions import ExpiredSignatureError
 
 from auth.middleware import jwt_middleware
 from auth.utils import redirect_not_authenticated_user
-from config import (SECRET_KEY,
-                    DATABASE_URL,
-                    ACCESS_TOKEN_EXPIRE_MINUTES,
-                    REFRESH_TOKEN_EXPIRE_MINUTES
-                    )
+from app_config import (SECRET_KEY,
+                        DATABASE_URL,
+                        ACCESS_TOKEN_EXPIRE_MINUTES,
+                        REFRESH_TOKEN_EXPIRE_MINUTES
+                        )
 from database.models import db
 from routers.admin_router import admin_bp
 from routers.auth_router import auth_bp

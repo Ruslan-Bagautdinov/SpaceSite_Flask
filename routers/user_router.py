@@ -12,7 +12,7 @@ from flask_jwt_extended import (jwt_required,
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 
-from config import IMAGE_DIR
+from app_config import IMAGE_DIR
 from database.crud import (get_user,
                            get_user_by_username,
                            get_user_profile,

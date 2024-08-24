@@ -8,7 +8,7 @@ from jwt import (decode,
                  ExpiredSignatureError,
                  InvalidTokenError)
 
-from config import SECRET_KEY, ALGORITHM
+from app_config import SECRET_KEY, ALGORITHM
 from database.crud import get_user_by_username
 
 
