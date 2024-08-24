@@ -28,9 +28,10 @@ git clone https://github.com/Ruslan-Bagautdinov/SpaceSite_Flask.git
 cd SpaceSite_Flask
 ```
 
-2. Fill in the .env File: Copy sample.env to .env and fill in the necessary values.
-```shell
-cp sample.env .env
+2. Fill the UNSPLASH_ACCESS_KEY in the sample.env with your's Unsplash Access Key for random space images on root page.
+
+```dotenv
+UNSPLASH_ACCESS_KEY='your_unsplash_access_key'
 ```
 
 3. Build and Run with Docker Compose:
